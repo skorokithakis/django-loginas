@@ -16,7 +16,7 @@ Installing django-loginas
 
 ```
 # settings.py
-INSTALLED_APPS = (... 'paypal.standard.ipn', ...)
+INSTALLED_APPS = (... 'loginas', ...)
 ```
 
 3. Add the loginas URL to your `urls.py`:
