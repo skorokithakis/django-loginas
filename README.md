@@ -34,4 +34,4 @@ button at the top right of the screen.
 License
 -------
 
-This software is distributed under the MIT license.
+This software is distributed under the BSD license.

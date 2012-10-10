@@ -1,0 +1,2 @@
+recursive-include loginas *.py *.html
+include README.md LICENSE
