@@ -10,7 +10,7 @@ About
 Installing django-loginas
 -------------------------
 
-1. Add `loginas` to your Python path.
+1. Add `loginas` to your Python path, or install using pip: `pip install django-loginas`
 
 2. Add the `loginas` app to your `INSTALLED_APPS`:
 
