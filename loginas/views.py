@@ -23,6 +23,7 @@ def user_login(request, user_id):
     # Log the user in.
     if hasattr(user, 'backend'):
         current_user_pk = request.user.pk
+        # Previous_users_pk is an array of users that have been logged in before
         previous_users_pk = request.session.get("previous_users_pk", default=[])
         previous_users_pk.append(current_user_pk)
         login(request, user)
@@ -32,6 +33,8 @@ def user_login(request, user_id):
 
 
 def loginas_exit(request):
+    # This will logout the pseudo-user and log the admin/superuser back in
+    # In settings.py you can set LOGINAS_EXIT_URL to "/admin/" if you want to return to the admin view
     previous_users_pk = request.session.get("previous_users_pk", default=[])
     if not previous_users_pk:
         return HttpResponseBadRequest(("Admin never logged in as this user. Cannot exit loginas."))
