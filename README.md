@@ -6,6 +6,8 @@ About
 
 "Log in as user" for the Django admin.
 
+[![Build Status](https://secure.travis-ci.org/stochastic-technologies/django-loginas.png?branch=master)](http://travis-ci.org/stochastic-technologies/django-loginas)
+
 
 Installing django-loginas
 -------------------------
