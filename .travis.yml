@@ -1,0 +1,11 @@
+language: python
+python:
+  - 2.5
+  - 2.6
+  - 2.7
+install: "pip install -r Django==$DJANGO_VERSION --use-mirrors"
+script: python goatfish/tests.py
+env:
+  - DJANGO_VERSION=1.2.7
+  - DJANGO_VERSION=1.4.5
+  - DJANGO_VERSION=1.5
