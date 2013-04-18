@@ -7,7 +7,7 @@ from setuptools import find_packages
 
 setup(
     name="django-loginas",
-    version="0.1.1",
+    version="0.1.2",
     author="Stochastic Technologies",
     author_email="info@stochastictechnologies.com",
     url="https://github.com/stochastic-technologies/django-loginas/",
