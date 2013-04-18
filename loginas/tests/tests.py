@@ -42,7 +42,7 @@ class ViewTest(TestCase):
     def assertLoginError(self, resp):
         messages = CookieStorage(resp)._decode(resp.cookies['messages'].value)
         self.assertEqual([(m.level, m.message) for m in messages],
-                         [(40, "You need to be a superuser to do that.")])
+                         [(40, "You do not have permission to do that.")])
 
     def test_as_superuser(self):
         create_user(username="me", password="pass",
