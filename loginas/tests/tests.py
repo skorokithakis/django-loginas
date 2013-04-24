@@ -6,10 +6,10 @@ from django.core.urlresolvers import reverse
 from django.contrib.messages.storage.cookie import CookieStorage
 
 
-def create_user(**kwargs):
-    user = User(**kwargs)
-    if 'password' in kwargs:
-        user.set_password(kwargs['password'])
+def create_user(username='', password='', **kwargs):
+    user = User(username=username, **kwargs)
+    if password:
+        user.set_password(password)
     user.save()
     return user
 
@@ -45,15 +45,14 @@ class ViewTest(TestCase):
                          [(40, "You do not have permission to do that.")])
 
     def test_as_superuser(self):
-        create_user(username="me", password="pass",
-                         is_superuser=True, is_staff=True)
+        create_user("me", "pass", is_superuser=True, is_staff=True)
         self.assertTrue(self.client.login(username="me", password="pass"))
         response = self.get_target_url()
         self.assertNotIn('messages', response.cookies)
         self.assertCurrentUserIs(self.target_user)
 
     def test_as_non_superuser(self):
-        user = create_user(username="me", password="pass", is_staff=True)
+        user = create_user("me", "pass", is_staff=True)
         self.assertTrue(self.client.login(username="me", password="pass"))
         self.assertLoginError(self.get_target_url())
         self.assertCurrentUserIs(user)
