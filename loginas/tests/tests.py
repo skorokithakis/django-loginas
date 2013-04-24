@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.test.utils import override_settings
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ImproperlyConfigured
 from django.contrib.messages.storage.cookie import CookieStorage
 
 
@@ -43,6 +44,13 @@ class ViewTest(TestCase):
         messages = CookieStorage(resp)._decode(resp.cookies['messages'].value)
         self.assertEqual([(m.level, m.message) for m in messages],
                          [(40, "You do not have permission to do that.")])
+
+    def assertRaisesExact(self, exception, func, *args, **kwargs):
+        try:
+            func(*args, **kwargs)
+            self.assertFail("{0} not raised".format(exc))
+        except exception.__class__ as caught:
+            self.assertEqual(caught.message, exception.message)
 
     def clear_cookies(self):
         for key in self.client.cookies.keys():
@@ -95,6 +103,16 @@ class ViewTest(TestCase):
         response = self.get_target_url(ray)
         self.assertNotIn('messages', response.cookies)
         self.assertCurrentUserIs(ray)
+
+    def test_custom_permissions_invalid_path(self):
+        def assertMessage(message):
+            self.assertRaisesExact(ImproperlyConfigured(message),
+                self.get_target_url)
+        with override_settings(CAN_LOGIN_AS='loginas.tests.invalid_func'):
+            assertMessage("Module loginas.tests does not define a invalid_func "
+                    "function.")
+        with override_settings(CAN_LOGIN_AS='loginas.tests.invalid_path.func'):
+            assertMessage("Error importing CAN_LOGIN_AS function.")
 
     def test_as_superuser(self):
         create_user("me", "pass", is_superuser=True, is_staff=True)
