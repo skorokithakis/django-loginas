@@ -79,6 +79,23 @@ class ViewTest(TestCase):
         self.assertNotIn('messages', response.cookies)
         self.assertCurrentUserIs(staff1)
 
+    @override_settings(CAN_LOGIN_AS='loginas.tests.login_as_shorter_username')
+    def test_custom_permissions_as_string(self):
+        ray = create_user("ray", "pass")
+        lonnie = create_user("lonnie", "pass")
+
+        # Ray cannot login as Lonnie
+        self.assertTrue(self.client.login(username="ray", password="pass"))
+        self.assertLoginError(self.get_target_url(lonnie))
+        self.assertCurrentUserIs(ray)
+        self.clear_cookies()
+
+        # Lonnie can login as Ray
+        self.assertTrue(self.client.login(username="lonnie", password="pass"))
+        response = self.get_target_url(ray)
+        self.assertNotIn('messages', response.cookies)
+        self.assertCurrentUserIs(ray)
+
     def test_as_superuser(self):
         create_user("me", "pass", is_superuser=True, is_staff=True)
         self.assertTrue(self.client.login(username="me", password="pass"))
