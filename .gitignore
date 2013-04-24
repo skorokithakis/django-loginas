@@ -1,4 +1,8 @@
 *.log
 *.pot
 *.pyc
+.coverage
+.tox
+*.egg
+*.egg-info
 local_settings.py
