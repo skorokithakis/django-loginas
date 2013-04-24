@@ -20,4 +20,6 @@ setup(
     zip_safe=False,
     include_package_data=True,
     packages=find_packages(),
+    test_suite='runtests.run_tests',
+    tests_require=['Django>=1.4'],
 )
