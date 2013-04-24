@@ -20,11 +20,11 @@ def _load_module(path):
     try:
         mod = import_module(module)
     except ImportError:
-        raise ImproperlyConfigured('Error importing BROWSERID_CREATE_USER'
+        raise ImproperlyConfigured('Error importing CAN_LOGIN_AS'
                                    ' function.')
     except ValueError:
-        raise ImproperlyConfigured('Error importing BROWSERID_CREATE_USER'
-                                   ' function. Is BROWSERID_CREATE_USER a'
+        raise ImproperlyConfigured('Error importing CAN_LOGIN_AS'
+                                   ' function. Is CAN_LOGIN_AS a'
                                    ' string?')
 
     try:
