@@ -21,13 +21,6 @@ class ViewTest(TestCase):
     def setUp(self):
         self.target_user = User.objects.create(username='target')
 
-    def create_user(self, **kwargs):
-        user = User(**kwargs)
-        if 'password' in kwargs:
-            user.set_password(kwargs['password'])
-        user.save()
-        return user
-
     def get_target_url(self):
         response = self.client.get(reverse(
             "loginas-user-login", kwargs={'user_id': self.target_user.id}))
