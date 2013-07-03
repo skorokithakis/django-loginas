@@ -48,6 +48,14 @@ CAN_LOGIN_AS = lambda request, target_user: request.user.is_admin and not target
 CAN_LOGIN_AS = "utils.helpers.custom_loginas"
 ```
 
+If you're using a custom User model, you'll need to add the template to it so the button shows up:
+
+```
+# admin.py
+class YourUserAdmin(ModelAdmin):
+    change_form_template = 'loginas/change_form.html'
+```
+
 At this point, you should be good to go. Just visit the Django admin, navigate to a user and you should see the "Log
 in as user" button at the top right of the screen.
 
