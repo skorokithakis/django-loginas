@@ -4,6 +4,7 @@ from django.contrib.auth import load_backend, login
 from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import redirect
 from django.utils.importlib import import_module
+from django.utils import six
 try:
     from django.contrib.auth import get_user_model
     User = get_user_model()
@@ -39,7 +40,7 @@ def user_login(request, user_id):
     user = User.objects.get(pk=user_id)
 
     CAN_LOGIN_AS = getattr(settings, "CAN_LOGIN_AS", lambda r, y: r.user.is_superuser)
-    if isinstance(CAN_LOGIN_AS, basestring):
+    if isinstance(CAN_LOGIN_AS, six.string_types):
         can_login_as = _load_module(CAN_LOGIN_AS)
     elif hasattr(CAN_LOGIN_AS, "__call__"):
         can_login_as = CAN_LOGIN_AS
