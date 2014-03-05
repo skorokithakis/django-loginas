@@ -57,7 +57,7 @@ class ViewTest(TestCase):
             self.assertEqual(caught.message, exception.message)
 
     def clear_cookies(self):
-        for key in self.client.cookies.keys():
+        for key in list(self.client.cookies.keys()):
             del self.client.cookies[key]
 
     @override_settings(CAN_LOGIN_AS=login_as_nonstaff)
