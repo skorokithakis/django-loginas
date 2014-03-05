@@ -9,6 +9,7 @@ from django.test.utils import override_settings
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.messages.storage.cookie import CookieStorage
+from django.utils.six import text_type
 
 
 def create_user(username='', password='', **kwargs):
@@ -40,7 +41,7 @@ class ViewTest(TestCase):
         return response
 
     def assertCurrentUserIs(self, user):
-        id_ = str(user.id if user is not None else None)
+        id_ = text_type(user.id if user is not None else None).encode('utf-8')
         self.assertEqual(self.client.get(reverse("current_user")).content, id_)
 
     def assertLoginError(self, resp):
