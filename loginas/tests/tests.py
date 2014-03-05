@@ -54,7 +54,7 @@ class ViewTest(TestCase):
             func(*args, **kwargs)
             self.assertFail("{0} not raised".format(exception))
         except exception.__class__ as caught:
-            self.assertEqual(caught.message, exception.message)
+            self.assertEqual(caught.args, exception.args)
 
     def clear_cookies(self):
         for key in list(self.client.cookies.keys()):
