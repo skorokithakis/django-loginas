@@ -52,7 +52,7 @@ class ViewTest(TestCase):
     def assertRaisesExact(self, exception, func, *args, **kwargs):
         try:
             func(*args, **kwargs)
-            self.assertFail("{0} not raised".format(exc))
+            self.assertFail("{0} not raised".format(exception))
         except exception.__class__ as caught:
             self.assertEqual(caught.message, exception.message)
 
