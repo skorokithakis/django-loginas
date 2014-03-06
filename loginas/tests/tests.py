@@ -1,4 +1,7 @@
-from urlparse import urlsplit
+try:
+    from urllib.parse import urlsplit
+except ImportError:
+    from urlparse import urlsplit
 
 from django.test import TestCase
 from django.contrib.auth.models import User
@@ -6,6 +9,7 @@ from django.test.utils import override_settings
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.messages.storage.cookie import CookieStorage
+from django.utils.six import text_type
 
 
 def create_user(username='', password='', **kwargs):
@@ -37,7 +41,7 @@ class ViewTest(TestCase):
         return response
 
     def assertCurrentUserIs(self, user):
-        id_ = str(user.id if user is not None else None)
+        id_ = text_type(user.id if user is not None else None).encode('utf-8')
         self.assertEqual(self.client.get(reverse("current_user")).content, id_)
 
     def assertLoginError(self, resp):
@@ -48,12 +52,12 @@ class ViewTest(TestCase):
     def assertRaisesExact(self, exception, func, *args, **kwargs):
         try:
             func(*args, **kwargs)
-            self.assertFail("{0} not raised".format(exc))
+            self.assertFail("{0} not raised".format(exception))
         except exception.__class__ as caught:
-            self.assertEqual(caught.message, exception.message)
+            self.assertEqual(caught.args, exception.args)
 
     def clear_cookies(self):
-        for key in self.client.cookies.keys():
+        for key in list(self.client.cookies.keys()):
             del self.client.cookies[key]
 
     @override_settings(CAN_LOGIN_AS=login_as_nonstaff)
