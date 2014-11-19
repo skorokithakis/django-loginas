@@ -6,8 +6,10 @@ python:
 install: "pip install Django==$DJANGO_VERSION --use-mirrors"
 script: ./runtests.py
 env:
-  - DJANGO_VERSION=1.4.5
-  - DJANGO_VERSION=1.5
+  - DJANGO_VERSION=1.4.16
+  - DJANGO_VERSION=1.5.11
+  - DJANGO_VERSION=1.6.8
+  - DJANGO_VERSION=1.7.1
 
 matrix:
   exclude:
