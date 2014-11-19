@@ -58,8 +58,15 @@ def user_login(request, user_id):
                 user.backend = backend
                 break
 
+    # Save the original user pk before it is replaced in the login method
+    original_user_pk = request.user.pk
+
     # Log the user in.
     if hasattr(user, 'backend'):
         login(request, user)
+
+    # Set a flag on the session
+    session_flag = getattr(settings, "LOGINAS_FROM_USER_SESSION_FLAG", "loginas_from_user")
+    request.session[session_flag] = original_user_pk
 
     return redirect("/")
