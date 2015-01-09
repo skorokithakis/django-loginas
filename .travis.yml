@@ -4,7 +4,7 @@ python:
   - 2.7
   - 3.3
 install: "pip install Django==$DJANGO_VERSION --use-mirrors"
-script: loginas/tests/manage.py test --verbosity=2
+script: loginas/tests/manage.py test --verbosity=2 tests
 env:
   - DJANGO_VERSION=1.4.16
   - DJANGO_VERSION=1.5.11
