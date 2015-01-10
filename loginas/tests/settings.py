@@ -19,6 +19,12 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 ]
+
+
+import django
+if django.VERSION[:2] >= (1, 7):
+    MIDDLEWARE_CLASSES.append(
+        'django.contrib.auth.middleware.SessionAuthenticationMiddleware'
+    )
