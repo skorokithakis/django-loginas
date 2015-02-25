@@ -39,12 +39,32 @@ def _load_module(path):
     return can_login_as
 
 
+def check_can_login_as(request, target_user):
+    user = request.user
+
+    if not user.is_authenticated():
+        return False
+
+    if user.is_superuser:
+        return True
+
+    authorized_ids = getattr(settings, 'CAN_LOGIN_AS_USER_IDS', None)
+    if authorized_ids and user.pk in authorized_ids:
+        return True
+
+    authorized_emails = getattr(settings, 'CAN_LOGIN_AS_USER_EMAILS', None)
+    if authorized_emails and user.email in authorized_emails:
+        return True
+
+    return False
+
+
 @csrf_protect
 @require_POST
 def user_login(request, user_id):
     user = User.objects.get(pk=user_id)
 
-    CAN_LOGIN_AS = getattr(settings, "CAN_LOGIN_AS", lambda r, y: r.user.is_superuser)
+    CAN_LOGIN_AS = getattr(settings, "CAN_LOGIN_AS", check_can_login_as)
     if isinstance(CAN_LOGIN_AS, six.string_types):
         can_login_as = _load_module(CAN_LOGIN_AS)
     elif hasattr(CAN_LOGIN_AS, "__call__"):
