@@ -34,8 +34,14 @@ urlpatterns += patterns('loginas.views',
 If you use custom User models, and haven't specified that permission, or if you want to change which users are
 authorized to log in as others, you can define the `CAN_LOGIN_AS` setting, like so:
 
-```
+```python
 # settings.py
+
+# This will allow authenticated users with listed ids log in as other users:
+CAN_LOGIN_AS_USER_IDS = [1, 2]
+
+# This will allow authenticated users with listed emails log in as other users:
+CAN_LOGIN_AS_USER_EMAILS = ['admin@domain.com']
 
 # This will only allow admins to log in as other users:
 CAN_LOGIN_AS = lambda request, target_user: request.user.is_admin
@@ -48,9 +54,22 @@ CAN_LOGIN_AS = lambda request, target_user: request.user.is_admin and not target
 CAN_LOGIN_AS = "utils.helpers.custom_loginas"
 ```
 
-If you're using a custom User model, you'll need to add the template to it so the button shows up:
+If you what to extend default `CAN_LOGIN_AS` function you can do it in next way:
+```python
+# helpers.py
+from loginas.views import check_can_login_as
+
+def custom_loginas(request, target_user):
+    if target_user.is_admin:
+        return False
+    return check_can_login_as(request, target_user)
 
 ```
+
+
+If you're using a custom User model, you'll need to add the template to it so the button shows up:
+
+```python
 # admin.py
 class YourUserAdmin(ModelAdmin):
     change_form_template = 'loginas/change_form.html'
