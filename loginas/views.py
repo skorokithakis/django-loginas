@@ -4,9 +4,12 @@ from django.contrib.auth import load_backend, login, REDIRECT_FIELD_NAME
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import resolve
 from django.shortcuts import redirect
-from django.utils.importlib import import_module
 from django.utils import six
+from django.utils.importlib import import_module
 from django.utils.http import is_safe_url
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_POST
+
 try:
     from django.contrib.auth import get_user_model
     User = get_user_model()
@@ -38,6 +41,8 @@ def _load_module(path):
     return can_login_as
 
 
+@csrf_protect
+@require_POST
 def user_login(request, user_id):
     user = User.objects.get(pk=user_id)
 
@@ -60,6 +65,9 @@ def user_login(request, user_id):
                 user.backend = backend
                 break
 
+    # Save the original user pk before it is replaced in the login method
+    original_user_pk = request.user.pk
+
     # Log the user in.
     if hasattr(user, 'backend'):
         login(request, user)
@@ -70,5 +78,9 @@ def user_login(request, user_id):
     )
     if not is_safe_url(url=redirect_to, host=request.get_host()):
         redirect_to = resolve(settings.LOGIN_REDIRECT_URL)
+
+    # Set a flag on the session
+    session_flag = getattr(settings, "LOGINAS_FROM_USER_SESSION_FLAG", "loginas_from_user")
+    request.session[session_flag] = original_user_pk
 
     return redirect(redirect_to)

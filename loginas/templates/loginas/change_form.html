@@ -6,7 +6,18 @@
 {% if change %}{% if not is_popup %}
   <ul class="object-tools">
     <li><a href="history/" class="historylink">History</a></li>
-    <li><a href="{% url "loginas-user-login" object_id %}">Log in as user</a></li>
+    <li><a id="loginas-link" href="#">Log in as user</a></li>
   </ul>
+
+  <form method="post" id="loginas-form" action="{% url 'loginas-user-login' object_id %}" stype="display:none">
+    {% csrf_token %}
+  </form>
+  <script>
+    django.jQuery('#loginas-link').on('click', function() {
+      django.jQuery('#loginas-form').submit();
+      return false;
+    });
+  </script>
+
 {% endif %}{% endif %}
 {% endblock %}

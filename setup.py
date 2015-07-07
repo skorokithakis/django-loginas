@@ -7,7 +7,7 @@ from setuptools import find_packages
 
 setup(
     name="django-loginas",
-    version="0.1.4",
+    version="0.1.5",
     author="Stochastic Technologies",
     author_email="info@stochastictechnologies.com",
     url="https://github.com/stochastic-technologies/django-loginas/",
@@ -20,6 +20,4 @@ setup(
     zip_safe=False,
     include_package_data=True,
     packages=find_packages(),
-    test_suite='runtests.run_tests',
-    tests_require=['Django>=1.4'],
 )
