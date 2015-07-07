@@ -2,8 +2,8 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import load_backend, login, REDIRECT_FIELD_NAME
 from django.core.exceptions import ImproperlyConfigured
+from django.core.urlresolvers import resolve
 from django.shortcuts import redirect
-from django.shortcuts import resolve_url
 from django.utils.importlib import import_module
 from django.utils import six
 from django.utils.http import is_safe_url
@@ -64,8 +64,11 @@ def user_login(request, user_id):
     if hasattr(user, 'backend'):
         login(request, user)
 
-    redirect_to = request.REQUEST.get(REDIRECT_FIELD_NAME, '')
+    redirect_to = request.POST.get(
+        redirect_field_name,
+        request.GET.get(redirect_field_name, '')
+    )
     if not is_safe_url(url=redirect_to, host=request.get_host()):
-        redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
+        redirect_to = resolve(settings.LOGIN_REDIRECT_URL)
 
     return redirect(redirect_to)
