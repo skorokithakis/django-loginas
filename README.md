@@ -38,11 +38,11 @@ authorized to log in as others, you can define the `CAN_LOGIN_AS` setting, like 
 # settings.py
 
 # This will only allow admins to log in as other users:
-CAN_LOGIN_AS = lambda request, target_user: request.user.is_admin
+CAN_LOGIN_AS = lambda request, target_user: request.user.is_superuser
 
 # This will only allow admins to log in as other users, as long as
 # those users are not admins themselves:
-CAN_LOGIN_AS = lambda request, target_user: request.user.is_admin and not target_user.is_admin
+CAN_LOGIN_AS = lambda request, target_user: request.user.is_superuser and not target_user.is_superuser
 
 # You can also define a string path to a module:
 CAN_LOGIN_AS = "utils.helpers.custom_loginas"
