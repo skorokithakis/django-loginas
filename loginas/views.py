@@ -63,9 +63,14 @@ def user_login(request, user_id):
     # Find a suitable backend.
     if not hasattr(user, 'backend'):
         for backend in settings.AUTHENTICATION_BACKENDS:
-            if user == load_backend(backend).get_user(user.pk):
-                user.backend = backend
-                break
+            try:
+                if user == load_backend(backend).get_user(user.pk):
+                    user.backend = backend
+                    break
+            except:
+                continue
+
+
 
     # Save the original user pk before it is replaced in the login method
     original_user_pk = request.user.pk
