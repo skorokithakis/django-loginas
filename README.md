@@ -18,16 +18,14 @@ Installing django-loginas
 
 ```
 # settings.py
-INSTALLED_APPS = (... 'loginas', ...)
+INSTALLED_APPS = [... 'loginas', ...]
 ```
 
 * Add the loginas URL to your `urls.py`:
 
 ```
 # urls.py
-urlpatterns += patterns('loginas.views',
-    url(r"^login/user/(?P<user_id>.+)/$", "user_login", name="loginas-user-login"),
-)
+urlpatterns += url(r'^admin/', include('loginas.urls')),
 ```
 
 * At this point, the only users who will be able to log in as other users are those with the `is_superuser` permission.

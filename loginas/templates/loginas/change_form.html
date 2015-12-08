@@ -1,23 +1,16 @@
 {% extends "admin/change_form.html" %}
 
-{% load url from future %}
-
-{% block object-tools %}
-{% if change %}{% if not is_popup %}
-  <ul class="object-tools">
-    <li><a href="history/" class="historylink">History</a></li>
+{% block object-tools-items %}
+    {{ block.super }}
     <li><a id="loginas-link" href="#">Log in as user</a></li>
-  </ul>
 
-  <form method="post" id="loginas-form" action="{% url 'loginas-user-login' object_id %}" stype="display:none">
-    {% csrf_token %}
-  </form>
-  <script>
-    django.jQuery('#loginas-link').on('click', function() {
-      django.jQuery('#loginas-form').submit();
-      return false;
-    });
-  </script>
-
-{% endif %}{% endif %}
+    <form method="post" id="loginas-form" action="{% url 'loginas-user-login' object_id %}" stype="display:none">
+        {% csrf_token %}
+    </form>
+    <script>
+        django.jQuery('#loginas-link').on('click', function() {
+            django.jQuery('#loginas-form').submit();
+            return false;
+        });
+    </script>
 {% endblock %}
