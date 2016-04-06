@@ -50,7 +50,6 @@ class ViewTest(TestCase):
             data=self.get_csrf_token_payload()
         )
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(urlsplit(response['Location'])[2], "/")
         return response
 
     def assertCurrentUserIs(self, user):
@@ -62,11 +61,18 @@ class ViewTest(TestCase):
         self.assertEqual(r.content, id_)
 
     def assertLoginError(self, resp):
+        self.assertEqual(urlsplit(resp['Location'])[2], "/")
+
         messages = CookieStorage(resp)._decode(resp.cookies['messages'].value)
         self.assertIn(
             (40, u"You do not have permission to do that."),
             [(m.level, m.message) for m in messages]
         )
+
+    def assertLoginSuccess(self, resp):
+        self.assertEqual(urlsplit(resp['Location'])[2],
+                         settings.LOGIN_REDIRECT_URL)
+        self.assertNotIn('messages', resp.cookies)
 
     def assertRaisesExact(self, exception, func, *args, **kwargs):
         try:
@@ -93,7 +99,7 @@ class ViewTest(TestCase):
         # Non-superuser staff user can login as regular user
         self.assertTrue(self.client.login(username="staff", password="pass"))
         response = self.get_target_url(user)
-        self.assertNotIn('messages', response.cookies)
+        self.assertLoginSuccess(response)
         self.assertCurrentUserIs(user)
         self.clear_session_cookie()
 
@@ -106,7 +112,7 @@ class ViewTest(TestCase):
         # Superuser staff user can login as other staff
         self.assertTrue(self.client.login(username="super", password="pass"))
         response = self.get_target_url(staff1)
-        self.assertNotIn('messages', response.cookies)
+        self.assertLoginSuccess(response)
         self.assertCurrentUserIs(staff1)
 
     @override_settings(CAN_LOGIN_AS='loginas.tests.login_as_shorter_username')
@@ -123,7 +129,7 @@ class ViewTest(TestCase):
         # Lonnie can login as Ray
         self.assertTrue(self.client.login(username="lonnie", password="pass"))
         response = self.get_target_url(ray)
-        self.assertNotIn('messages', response.cookies)
+        self.assertLoginSuccess(response)
         self.assertCurrentUserIs(ray)
 
     def test_custom_permissions_invalid_path(self):
@@ -140,7 +146,7 @@ class ViewTest(TestCase):
         create_user("me", "pass", is_superuser=True, is_staff=True)
         self.assertTrue(self.client.login(username="me", password="pass"))
         response = self.get_target_url()
-        self.assertNotIn('messages', response.cookies)
+        self.assertLoginSuccess(response)
         self.assertCurrentUserIs(self.target_user)
 
     def test_as_non_superuser(self):
@@ -162,3 +168,15 @@ class ViewTest(TestCase):
         url = reverse("loginas-user-login", kwargs={'user_id': '0'})
         r = self.client.post(url)
         self.assertEqual(r.status_code, 403)
+
+    @override_settings(LOGINAS_REDIRECT_URL="/loginas-redirect")
+    def test_loginas_redirect_url(self):
+        create_user("me", "pass", is_superuser=True, is_staff=True)
+        self.assertTrue(self.client.login(username="me", password="pass"))
+
+        response = self.client.post(reverse("loginas-user-login",
+            kwargs={'user_id': self.target_user.id}),
+            data=self.get_csrf_token_payload()
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(urlsplit(response['Location'])[2], "/loginas-redirect")

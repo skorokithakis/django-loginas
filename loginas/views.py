@@ -78,4 +78,4 @@ def user_login(request, user_id):
     session_flag = getattr(settings, "LOGINAS_FROM_USER_SESSION_FLAG", "loginas_from_user")
     request.session[session_flag] = original_user_pk
 
-    return redirect("/")
+    return redirect(getattr(settings, "LOGINAS_REDIRECT_URL", settings.LOGIN_REDIRECT_URL))
