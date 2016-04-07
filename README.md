@@ -28,7 +28,21 @@ INSTALLED_APPS = [... 'loginas', ...]
 urlpatterns += url(r'^admin/', include('loginas.urls')),
 ```
 
-* At this point, the only users who will be able to log in as other users are those with the `is_superuser` permission.
+* If you're using a custom User model, you'll need to add the template to it so the button shows up:
+
+```
+# admin.py
+class YourUserAdmin(ModelAdmin):
+    change_form_template = 'loginas/change_form.html'
+```
+
+At this point, you should be good to go. Just visit the Django admin, navigate to a user and you should see the "Log
+in as user" button at the top right of the screen.
+
+Configuring
+-----------
+
+At this point, the only users who will be able to log in as other users are those with the `is_superuser` permission.
 If you use custom User models, and haven't specified that permission, or if you want to change which users are
 authorized to log in as others, you can define the `CAN_LOGIN_AS` setting, like so:
 
@@ -46,16 +60,14 @@ CAN_LOGIN_AS = lambda request, target_user: request.user.is_superuser and not ta
 CAN_LOGIN_AS = "utils.helpers.custom_loginas"
 ```
 
-If you're using a custom User model, you'll need to add the template to it so the button shows up:
+By default, clicking "Login as user" will send the user to `settings.LOGIN_REDIRECT_URL`.
+You can override this behavior like so:
 
 ```
-# admin.py
-class YourUserAdmin(ModelAdmin):
-    change_form_template = 'loginas/change_form.html'
-```
+# settings.py
 
-At this point, you should be good to go. Just visit the Django admin, navigate to a user and you should see the "Log
-in as user" button at the top right of the screen.
+LOGINAS_REDIRECT_URL = '/loginas-redirect-url'
+```
 
 License
 -------
