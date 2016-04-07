@@ -29,6 +29,8 @@ TEMPLATES = [
     },
 ]
 
+LOGIN_REDIRECT_URL = "/login-redirect"
+
 import django
 if django.VERSION[:2] >= (1, 7):
     MIDDLEWARE_CLASSES.append(
