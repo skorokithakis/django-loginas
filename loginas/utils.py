@@ -3,6 +3,7 @@ import logging
 from django.conf import settings as django_settings
 from django.contrib.auth.models import User
 from django.contrib.auth import load_backend, login, logout
+from django.contrib import messages
 from django.core.signing import TimestampSigner, SignatureExpired
 from datetime import timedelta
 
@@ -35,6 +36,7 @@ def login_as(user, request, store_original_user=True):
 
     # Set a flag on the session
     if store_original_user:
+        messages.warning(request, "Your login is now switched to {} - log out to become your original user!".format(user.username))
         request.session[settings.USER_SESSION_FLAG] = signer.sign(original_user_pk)
 
 
@@ -55,6 +57,7 @@ def restore_original_login(request):
             max_age=timedelta(days=2)
         )
         user = User.objects.get(pk=original_user_pk)
+        messages.info(request, "You are now logged back in as {}".format(user.username))
         login_as(user, request, store_original_user=False)
     except SignatureExpired:
         logger.error("Invalid signature encountered")
