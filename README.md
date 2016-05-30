@@ -69,6 +69,10 @@ You can override this behavior like so:
 LOGINAS_REDIRECT_URL = '/loginas-redirect-url'
 ```
 
+Note that django-loginas won't let you log in as other superusers, to prevent
+privilege escalation from staff users to superusers. If you want to log in as
+a superuser, first demote them to a non-superuser, and then log in.
+
 License
 -------
 
