@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.core.signing import TimestampSigner, SignatureExpired
 from datetime import timedelta
 
-from . import settings
+from . import settings as la_settings
 
 signer = TimestampSigner()
 
@@ -36,8 +36,8 @@ def login_as(user, request, store_original_user=True):
 
     # Set a flag on the session
     if store_original_user:
-        messages.warning(request, "Your login is now switched to {} - log out to become your original user!".format(user.username))
-        request.session[settings.USER_SESSION_FLAG] = signer.sign(original_user_pk)
+        messages.warning(request, la_settings.MESSAGE_LOGIN_SWITCH.format(username=user.username))
+        request.session[la_settings.USER_SESSION_FLAG] = signer.sign(original_user_pk)
 
 
 def restore_original_login(request):
@@ -45,7 +45,7 @@ def restore_original_login(request):
     Restore an original login session, checking the signed session
     """
 
-    original_session = request.session.get(settings.USER_SESSION_FLAG)
+    original_session = request.session.get(la_settings.USER_SESSION_FLAG)
     logout(request)
 
     if not original_session:
@@ -57,7 +57,7 @@ def restore_original_login(request):
             max_age=timedelta(days=2)
         )
         user = User.objects.get(pk=original_user_pk)
-        messages.info(request, "You are now logged back in as {}".format(user.username))
+        messages.info(request, la_settings.MESSAGE_LOGIN_REVERT.format(username=user.username))
         login_as(user, request, store_original_user=False)
     except SignatureExpired:
         logger.error("Invalid signature encountered")

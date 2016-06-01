@@ -12,7 +12,7 @@ from django.views.decorators.http import require_POST
 
 
 from .utils import login_as, restore_original_login
-from . import settings
+from . import settings as la_settings
 
 
 try:
@@ -52,10 +52,10 @@ def _load_module(path):
 def user_login(request, user_id):
     user = User.objects.get(pk=user_id)
 
-    if isinstance(settings.CAN_LOGIN_AS, six.string_types):
-        can_login_as = _load_module(settings.CAN_LOGIN_AS)
-    elif hasattr(settings.CAN_LOGIN_AS, "__call__"):
-        can_login_as = settings.CAN_LOGIN_AS
+    if isinstance(la_settings.CAN_LOGIN_AS, six.string_types):
+        can_login_as = _load_module(la_settings.CAN_LOGIN_AS)
+    elif hasattr(la_settings.CAN_LOGIN_AS, "__call__"):
+        can_login_as = la_settings.CAN_LOGIN_AS
     else:
         raise ImproperlyConfigured("The CAN_LOGIN_AS setting is neither a valid module nor callable.")
 
@@ -69,7 +69,7 @@ def user_login(request, user_id):
 
     login_as(user, request)
 
-    return redirect(settings.LOGIN_REDIRECT)
+    return redirect(la_settings.LOGIN_REDIRECT)
 
 
 def user_logout(request):
@@ -81,4 +81,4 @@ def user_logout(request):
     """
     restore_original_login(request)
 
-    return redirect(settings.LOGIN_REDIRECT)
+    return redirect(la_settings.LOGIN_REDIRECT)
