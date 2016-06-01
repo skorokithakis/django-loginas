@@ -1,0 +1,47 @@
+Changelog
+=========
+
+v0.2.0 (2016-06-01)
+-------------------
+
+Features
+~~~~~~~~
+
+- After logging in as a user, restore to the previous user again when
+  logging out. [Benjamin Bach]
+
+Fixes
+~~~~~
+
+- Escape early if a backend is not found. [Stavros Korokithakis]
+
+Documentation
+~~~~~~~~~~~~~
+
+- Clarify superuser login restriction. [Stavros Korokithakis]
+
+v0.1.10 (2016-05-30)
+--------------------
+
+Fixes
+~~~~~
+
+- Disallow logging in as superusers. [Stavros Korokithakis]
+
+v0.1.9 (2016-04-07)
+-------------------
+
+Fixes
+~~~~~
+
+- Remove pytest from setup.cfg. [Stavros Korokithakis]
+
+v0.1.8 (2016-04-07)
+-------------------
+
+Fixes
+~~~~~
+
+- Make loginas compatible with semantic-release. [Stavros Korokithakis]
+
+
