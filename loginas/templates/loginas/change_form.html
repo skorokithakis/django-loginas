@@ -14,7 +14,7 @@
 
 {% block content %}
     {{ block.super }}
-    <form method="post" id="loginas-form" action="{% url 'loginas-user-login' object_id %}" stype="display:none">
+    <form method="post" id="loginas-form" action="{% url 'loginas-user-login' object_id %}" style="display:none">
         {% csrf_token %}
     </form>
 {% endblock %}
