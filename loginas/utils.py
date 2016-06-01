@@ -33,6 +33,8 @@ def login_as(user, request, store_original_user=True):
     # Log the user in.
     if hasattr(user, 'backend'):
         login(request, user)
+    else:
+        return
 
     # Set a flag on the session
     if store_original_user:
