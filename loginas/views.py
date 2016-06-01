@@ -3,14 +3,17 @@ try:
 except ImportError:
     from django.utils.importlib import import_module
 
-from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import load_backend, login
 from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import redirect
 from django.utils import six
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
+
+
+from .utils import login_as, restore_original_login
+from . import settings as la_settings
+
 
 try:
     from django.contrib.auth import get_user_model
@@ -28,8 +31,9 @@ def _load_module(path):
     try:
         mod = import_module(module)
     except ImportError:
-        raise ImproperlyConfigured('Error importing CAN_LOGIN_AS'
-                                   ' function.')
+        raise ImproperlyConfigured(
+            'Error importing CAN_LOGIN_AS function: {}'.format(module)
+        )
     except ValueError:
         raise ImproperlyConfigured('Error importing CAN_LOGIN_AS'
                                    ' function. Is CAN_LOGIN_AS a'
@@ -48,11 +52,10 @@ def _load_module(path):
 def user_login(request, user_id):
     user = User.objects.get(pk=user_id)
 
-    CAN_LOGIN_AS = getattr(settings, "CAN_LOGIN_AS", lambda r, y: r.user.is_superuser)
-    if isinstance(CAN_LOGIN_AS, six.string_types):
-        can_login_as = _load_module(CAN_LOGIN_AS)
-    elif hasattr(CAN_LOGIN_AS, "__call__"):
-        can_login_as = CAN_LOGIN_AS
+    if isinstance(la_settings.CAN_LOGIN_AS, six.string_types):
+        can_login_as = _load_module(la_settings.CAN_LOGIN_AS)
+    elif hasattr(la_settings.CAN_LOGIN_AS, "__call__"):
+        can_login_as = la_settings.CAN_LOGIN_AS
     else:
         raise ImproperlyConfigured("The CAN_LOGIN_AS setting is neither a valid module nor callable.")
 
@@ -64,22 +67,18 @@ def user_login(request, user_id):
         messages.error(request, "You do not have permission to do that.")
         return redirect(request.META.get("HTTP_REFERER", "/"))
 
-    # Find a suitable backend.
-    if not hasattr(user, 'backend'):
-        for backend in settings.AUTHENTICATION_BACKENDS:
-            if user == load_backend(backend).get_user(user.pk):
-                user.backend = backend
-                break
+    login_as(user, request)
 
-    # Save the original user pk before it is replaced in the login method
-    original_user_pk = request.user.pk
+    return redirect(la_settings.LOGIN_REDIRECT)
 
-    # Log the user in.
-    if hasattr(user, 'backend'):
-        login(request, user)
 
-    # Set a flag on the session
-    session_flag = getattr(settings, "LOGINAS_FROM_USER_SESSION_FLAG", "loginas_from_user")
-    request.session[session_flag] = original_user_pk
+def user_logout(request):
+    """
+    This can replace your default logout view. In you settings, do:
 
-    return redirect(getattr(settings, "LOGINAS_REDIRECT_URL", settings.LOGIN_REDIRECT_URL))
+    from django.core.urlresolvers import reverse_lazy
+    LOGOUT_URL = reverse_lazy('loginas-logout')
+    """
+    restore_original_login(request)
+
+    return redirect(la_settings.LOGIN_REDIRECT)

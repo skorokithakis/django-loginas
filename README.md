@@ -69,6 +69,16 @@ You can override this behavior like so:
 LOGINAS_REDIRECT_URL = '/loginas-redirect-url'
 ```
 
+In order to automatically restore the original user upon log out, replace the default log out
+with a special log out that restores the original login session from a signed session.
+
+```
+# settings.py
+
+from django.core.urlresolvers import reverse_lazy
+LOGOUT_URL = reverse_lazy('loginas-logout')
+```
+
 Note that django-loginas won't let you log in as other superusers, to prevent
 privilege escalation from staff users to superusers. If you want to log in as
 a superuser, first demote them to a non-superuser, and then log in.
