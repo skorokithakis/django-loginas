@@ -9,11 +9,11 @@ LOGIN_REDIRECT = getattr(settings, "LOGINAS_REDIRECT_URL", settings.LOGIN_REDIRE
 MESSAGE_LOGIN_SWITCH = getattr(
     settings,
     "LOGINAS_MESSAGE_LOGIN_SWITCH",
-    "Your login is now switched to {username} - log out to become your original user!"
+    u"Your login is now switched to {username} - log out to become your original user!"
 )
 
 MESSAGE_LOGIN_REVERT = getattr(
     settings,
     "MESSAGE_LOGIN_REVERT",
-    "You are now logged back in as {username}"
+    u"You are now logged back in as {username}"
 )

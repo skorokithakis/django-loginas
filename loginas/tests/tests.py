@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 
 try:
@@ -117,25 +118,25 @@ class ViewTest(TestCase):
 
     @override_settings(CAN_LOGIN_AS=login_as_nonstaff)
     def test_custom_permissions(self):
-        user = create_user("user", "pass", is_superuser=False, is_staff=False)
-        staff1 = create_user("staff", "pass", is_superuser=False, is_staff=True)
+        user = create_user(u"üser", "pass", is_superuser=False, is_staff=False)
+        staff1 = create_user("stäff", "pass", is_superuser=False, is_staff=True)
         staff2 = create_user("super", "pass", is_superuser=True, is_staff=True)
 
         # Regular user can't login as anyone
-        self.assertTrue(self.client.login(username="user", password="pass"))
+        self.assertTrue(self.client.login(username=u"üser", password="pass"))
         self.assertLoginError(self.get_target_url())
         self.assertCurrentUserIs(user)
         self.clear_session_cookie()
 
         # Non-superuser staff user can login as regular user
-        self.assertTrue(self.client.login(username="staff", password="pass"))
+        self.assertTrue(self.client.login(username="stäff", password="pass"))
         response = self.get_target_url(user)
         self.assertLoginSuccess(response, user)
         self.assertCurrentUserIs(user)
         self.clear_session_cookie()
 
         # Non-superuser staff user cannot login as other staff
-        self.assertTrue(self.client.login(username="staff", password="pass"))
+        self.assertTrue(self.client.login(username="stäff", password="pass"))
         self.assertLoginError(self.get_target_url(staff2))
         self.assertCurrentUserIs(staff1)
         self.clear_session_cookie()
