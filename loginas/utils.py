@@ -2,7 +2,7 @@ import logging
 
 from django.conf import settings as django_settings
 from django.contrib.auth.models import User
-from django.contrib.auth import load_backend, login, logout
+from django.contrib.auth import get_user_model, load_backend, login, logout
 from django.contrib import messages
 from django.core.signing import TimestampSigner, SignatureExpired
 from datetime import timedelta
@@ -23,6 +23,9 @@ def login_as(user, request, store_original_user=True):
     # Save the original user pk before it is replaced in the login method
     original_user_pk = request.user.pk
 
+    # Get username field's name
+    username_field = get_user_model().USERNAME_FIELD
+
     # Find a suitable backend.
     if not hasattr(user, 'backend'):
         for backend in django_settings.AUTHENTICATION_BACKENDS:
@@ -38,7 +41,7 @@ def login_as(user, request, store_original_user=True):
 
     # Set a flag on the session
     if store_original_user:
-        messages.warning(request, la_settings.MESSAGE_LOGIN_SWITCH.format(username=user.username))
+        messages.warning(request, la_settings.MESSAGE_LOGIN_SWITCH.format(username=user.__dict__[username_field]))
         request.session[la_settings.USER_SESSION_FLAG] = signer.sign(original_user_pk)
 
 
