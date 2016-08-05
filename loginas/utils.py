@@ -13,6 +13,7 @@ signer = TimestampSigner()
 
 logger = logging.getLogger(__name__)
 
+username_field = get_user_model().USERNAME_FIELD
 
 def login_as(user, request, store_original_user=True):
     """
@@ -22,9 +23,6 @@ def login_as(user, request, store_original_user=True):
 
     # Save the original user pk before it is replaced in the login method
     original_user_pk = request.user.pk
-
-    # Get username field's name
-    username_field = get_user_model().USERNAME_FIELD
 
     # Find a suitable backend.
     if not hasattr(user, 'backend'):
@@ -61,8 +59,8 @@ def restore_original_login(request):
             original_session,
             max_age=timedelta(days=2)
         )
-        user = User.objects.get(pk=original_user_pk)
-        messages.info(request, la_settings.MESSAGE_LOGIN_REVERT.format(username=user.username))
+        user = get_user_model().objects.get(pk=original_user_pk)
+        messages.info(request, la_settings.MESSAGE_LOGIN_REVERT.format(username=user.__dict__[username_field]))
         login_as(user, request, store_original_user=False)
     except SignatureExpired:
         logger.error("Invalid signature encountered")
