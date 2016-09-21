@@ -1,8 +1,7 @@
 import logging
 
 from django.conf import settings as django_settings
-from django.contrib.auth.models import User
-from django.contrib.auth import get_user_model, load_backend, login, logout
+from django.contrib.auth import load_backend, login, logout
 from django.contrib import messages
 from django.core.signing import TimestampSigner, SignatureExpired
 from datetime import timedelta
@@ -13,6 +12,11 @@ signer = TimestampSigner()
 
 logger = logging.getLogger(__name__)
 
+try:
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+except ImportError:
+    from django.contrib.auth.models import User
 
 def login_as(user, request, store_original_user=True):
     """
@@ -24,7 +28,10 @@ def login_as(user, request, store_original_user=True):
     original_user_pk = request.user.pk
 
     # Get username field's name
-    username_field = get_user_model().USERNAME_FIELD
+    try:
+        username_field = User.USERNAME_FIELD
+    except AttributeError:
+        username_field = 'username'
 
     # Find a suitable backend.
     if not hasattr(user, 'backend'):
