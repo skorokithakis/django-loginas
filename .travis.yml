@@ -2,7 +2,7 @@ language: python
 python:
   - 2.7
   - 3.4
-install: "pip install Django==$DJANGO_VERSION --use-mirrors"
+install: "pip install Django==$DJANGO_VERSION"
 script: loginas/tests/manage.py test --verbosity=2 tests
 env:
   - DJANGO_VERSION=1.8
