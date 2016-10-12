@@ -1,8 +1,9 @@
 {% extends "admin/change_form.html" %}
+{% load i18n %}
 
 {% block object-tools-items %}
     {{ block.super }}
-    <li><a id="loginas-link" href="#"><i class="icon-user icon-alpha75"></i>Log in as user</a></li>
+    <li><a id="loginas-link" href="#"><i class="icon-user icon-alpha75"></i>{% trans "Log in as user" %}</a></li>
 
 {% endblock %}
 

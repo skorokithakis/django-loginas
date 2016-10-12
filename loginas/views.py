@@ -9,7 +9,7 @@ from django.shortcuts import redirect
 from django.utils import six
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
-
+from django.utils.translation import ugettext_lazy as _
 
 from .utils import login_as, restore_original_login
 from . import settings as la_settings
@@ -60,11 +60,11 @@ def user_login(request, user_id):
         raise ImproperlyConfigured("The CAN_LOGIN_AS setting is neither a valid module nor callable.")
 
     if user.is_superuser:
-        messages.error(request, "You cannot log in as superusers.")
+        messages.error(request, _("You cannot log in as superusers."))
         return redirect(request.META.get("HTTP_REFERER", "/"))
 
     if not can_login_as(request, user):
-        messages.error(request, "You do not have permission to do that.")
+        messages.error(request, _("You do not have permission to do that."))
         return redirect(request.META.get("HTTP_REFERER", "/"))
 
     login_as(user, request)

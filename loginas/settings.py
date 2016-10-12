@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 
 USER_SESSION_FLAG = getattr(settings, "LOGINAS_FROM_USER_SESSION_FLAG", "loginas_from_user")
 
@@ -9,11 +10,11 @@ LOGIN_REDIRECT = getattr(settings, "LOGINAS_REDIRECT_URL", settings.LOGIN_REDIRE
 MESSAGE_LOGIN_SWITCH = getattr(
     settings,
     "LOGINAS_MESSAGE_LOGIN_SWITCH",
-    u"Your login is now switched to {username} - log out to become your original user!"
+    _("Your login is now switched to {username} - log out to become your original user!")
 )
 
 MESSAGE_LOGIN_REVERT = getattr(
     settings,
     "MESSAGE_LOGIN_REVERT",
-    u"You are now logged back in as {username}"
+    _("You are now logged back in as {username}")
 )

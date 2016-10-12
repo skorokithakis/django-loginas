@@ -1,0 +1,36 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-10-12 17:02+0200\n"
+"PO-Revision-Date: 2016-10-12 16:57+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 1.8.7\n"
+
+#, python-brace-format
+msgid "Your login is now switched to {username} - log out to become your original user!"
+msgstr "Vous êtes maintenant connecté en tant que {username} - déconnectez vous pour retrouver votre utilisateur précédent!"
+
+#, python-brace-format
+msgid "You are now logged back in as {username}"
+msgstr "Vous êtes maintenant à nouveau connecté en tant que {username}"
+
+msgid "Log in as user"
+msgstr "Connexion en tant que cet utilisateur"
+
+msgid "You cannot log in as superusers."
+msgstr "Vous ne pouvez pas vous connectez en tant que super utilisateur."
+
+msgid "You do not have permission to do that."
+msgstr "Vous n’avez pas la permission pour faire cela."
