@@ -45,7 +45,6 @@ def restore_original_login(request):
     """
     Restore an original login session, checking the signed session
     """
-
     original_session = request.session.get(la_settings.USER_SESSION_FLAG)
     logout(request)
 
@@ -60,5 +59,7 @@ def restore_original_login(request):
         user = get_user_model().objects.get(pk=original_user_pk)
         messages.info(request, la_settings.MESSAGE_LOGIN_REVERT.format(username=user.__dict__[username_field]))
         login_as(user, request, store_original_user=False)
+        if la_settings.USER_SESSION_FLAG in request.session:
+            del request.session[la_settings.USER_SESSION_FLAG]
     except SignatureExpired:
         logger.error("Invalid signature encountered")
