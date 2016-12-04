@@ -9,6 +9,8 @@ CAN_LOGIN_AS = getattr(settings, "CAN_LOGIN_AS", lambda r, y: r.user.is_superuse
 
 LOGIN_REDIRECT = getattr(settings, "LOGINAS_REDIRECT_URL", settings.LOGIN_REDIRECT_URL)
 
+LOGOUT_REDIRECT = getattr(settings, "LOGINAS_LOGOUT_REDIRECT_URL", settings.LOGIN_REDIRECT_URL)
+
 MESSAGE_LOGIN_SWITCH = getattr(
     settings,
     "LOGINAS_MESSAGE_LOGIN_SWITCH",

@@ -79,6 +79,15 @@ from django.core.urlresolvers import reverse_lazy
 LOGOUT_URL = reverse_lazy('loginas-logout')
 ```
 
+Additionally you can also specify the redirect url for logout default is `settings.LOGIN_REDIRECT_URL`
+
+```
+# settings.py
+
+from django.core.urlresolvers import reverse_lazy
+LOGINAS_LOGOUT_REDIRECT_URL = reverse_lazy('admin:index')
+```
+
 By default, clicking "Login as user" will not update `user.last_login`.
 You can override this behavior like so:
 
