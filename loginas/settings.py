@@ -20,3 +20,5 @@ MESSAGE_LOGIN_REVERT = getattr(
     "MESSAGE_LOGIN_REVERT",
     _("You are now logged back in as {username}")
 )
+
+UPDATE_LAST_LOGIN = getattr(settings, 'LOGINAS_UPDATE_LAST_LOGIN', False)

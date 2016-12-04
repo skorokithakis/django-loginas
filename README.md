@@ -79,6 +79,15 @@ from django.core.urlresolvers import reverse_lazy
 LOGOUT_URL = reverse_lazy('loginas-logout')
 ```
 
+By default, clicking "Login as user" will not update `user.last_login`.
+You can override this behavior like so:
+
+```
+# settings.py
+
+LOGINAS_UPDATE_LAST_LOGIN = True
+```
+
 Note that django-loginas won't let you log in as other superusers, to prevent
 privilege escalation from staff users to superusers. If you want to log in as
 a superuser, first demote them to a non-superuser, and then log in.
