@@ -22,3 +22,5 @@ MESSAGE_LOGIN_REVERT = getattr(
 )
 
 MESSAGE_EXTRA_TAGS = getattr(settings, 'LOGINAS_MESSAGE_EXTRA_TAGS', '')
+
+UPDATE_LAST_LOGIN = getattr(settings, 'LOGINAS_UPDATE_LAST_LOGIN', False)

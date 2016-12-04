@@ -5,16 +5,19 @@ try:
     from urllib.parse import urlsplit
 except ImportError:
     from urlparse import urlsplit
+from datetime import timedelta
 
 from django.conf import settings as django_settings
 from django.test import Client
 from django.test import TestCase
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, update_last_login
+from django.contrib.auth.signals import user_logged_in
 from django.test.utils import override_settings as override_settings_orig
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.messages.storage.cookie import CookieStorage
 from django.utils.six import text_type
+from django.utils import timezone
 
 
 from loginas import settings as la_settings
@@ -65,6 +68,12 @@ class ViewTest(TestCase):
         self.client.get('/')  # To get the CSRF token for next request
         assert django_settings.CSRF_COOKIE_NAME in self.client.cookies
         self.target_user = User.objects.create(username='target')
+        # setup listener
+        user_logged_in.connect(update_last_login)
+
+    def tearDown(self):
+        """Disconnect the listeners"""
+        user_logged_in.disconnect(update_last_login)
 
     def get_csrf_token_payload(self):
         return {
@@ -231,3 +240,28 @@ class ViewTest(TestCase):
         url = reverse("loginas-logout")
         self.client.get(url)
         self.assertCurrentUserIs(original_user)
+
+    def test_last_login_not_updated(self):
+        last_login = timezone.now() - timedelta(hours=1)
+        self.target_user.last_login = last_login
+        self.target_user.save()
+        create_user("me", "pass", is_superuser=True, is_staff=True)
+        self.assertTrue(self.client.login(username="me", password="pass"))
+        response = self.get_target_url()
+        self.assertLoginSuccess(response, self.target_user)
+        self.assertCurrentUserIs(self.target_user)
+        target_user = User.objects.get(id=self.target_user.id)  # refresh from db
+        self.assertEqual(target_user.last_login, last_login)
+
+    @override_settings(LOGINAS_UPDATE_LAST_LOGIN=True)
+    def test_last_login_updated(self):
+        last_login = timezone.now() - timedelta(hours=1)
+        self.target_user.last_login = last_login
+        self.target_user.save()
+        create_user("me", "pass", is_superuser=True, is_staff=True)
+        self.assertTrue(self.client.login(username="me", password="pass"))
+        response = self.get_target_url()
+        self.assertLoginSuccess(response, self.target_user)
+        self.assertCurrentUserIs(self.target_user)
+        target_user = User.objects.get(id=self.target_user.id)  # refresh from db
+        self.assertGreater(target_user.last_login, last_login)
