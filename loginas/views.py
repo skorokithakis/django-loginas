@@ -81,4 +81,4 @@ def user_logout(request):
     """
     restore_original_login(request)
 
-    return redirect(la_settings.LOGIN_REDIRECT)
+    return redirect(la_settings.LOGOUT_REDIRECT)
