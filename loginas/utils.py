@@ -37,7 +37,8 @@ def login_as(user, request, store_original_user=True):
 
     # Set a flag on the session
     if store_original_user:
-        messages.warning(request, la_settings.MESSAGE_LOGIN_SWITCH.format(username=user.__dict__[username_field]))
+        messages.warning(request, la_settings.MESSAGE_LOGIN_SWITCH.format(username=user.__dict__[username_field]),
+                         extra_tags=la_settings.MESSAGE_EXTRA_TAGS)
         request.session[la_settings.USER_SESSION_FLAG] = signer.sign(original_user_pk)
 
 
@@ -54,10 +55,11 @@ def restore_original_login(request):
     try:
         original_user_pk = signer.unsign(
             original_session,
-            max_age=timedelta(days=la_settings.USER_SESSION_DAYS_TIMESTAMP)
+            max_age=timedelta(days=la_settings.USER_SESSION_DAYS_TIMESTAMP).total_seconds()
         )
         user = get_user_model().objects.get(pk=original_user_pk)
-        messages.info(request, la_settings.MESSAGE_LOGIN_REVERT.format(username=user.__dict__[username_field]))
+        messages.info(request, la_settings.MESSAGE_LOGIN_REVERT.format(username=user.__dict__[username_field]),
+                      extra_tags=la_settings.MESSAGE_EXTRA_TAGS)
         login_as(user, request, store_original_user=False)
         if la_settings.USER_SESSION_FLAG in request.session:
             del request.session[la_settings.USER_SESSION_FLAG]
