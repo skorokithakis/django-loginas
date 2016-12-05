@@ -18,7 +18,7 @@ MESSAGE_LOGIN_SWITCH = getattr(
 MESSAGE_LOGIN_REVERT = getattr(
     settings,
     "LOGINAS_MESSAGE_LOGIN_REVERT",
-    _("You are now logged back in as {username}")
+    _("You are now logged back in as {username}.")
 )
 
 MESSAGE_EXTRA_TAGS = getattr(settings, 'LOGINAS_MESSAGE_EXTRA_TAGS', '')
