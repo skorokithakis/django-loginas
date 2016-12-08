@@ -241,6 +241,14 @@ class ViewTest(TestCase):
         self.client.get(url)
         self.assertCurrentUserIs(original_user)
 
+    @override_settings(LOGINAS_LOGOUT_REDIRECT_URL="/another-redirect")
+    def test_loginas_redirect_url(self):
+        create_user("me", "pass", is_superuser=True, is_staff=True)
+        self.assertTrue(self.client.login(username="me", password="pass"))
+        response = self.client.get(reverse("loginas-logout"))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(urlsplit(response['Location'])[2], "/another-redirect")
+
     def test_last_login_not_updated(self):
         last_login = timezone.now() - timedelta(hours=1)
         self.target_user.last_login = last_login
