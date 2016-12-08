@@ -38,12 +38,13 @@ def login_as(user, request, store_original_user=True):
             # Prevent update of user last_login
             signal_was_connected = user_logged_in.disconnect(update_last_login)
 
-        # Actually log user in
-        login(request, user)
-
-        # Restore signal if needed
-        if signal_was_connected:
-            user_logged_in.connect(update_last_login)
+        try:
+            # Actually log user in
+            login(request, user)
+        finally:
+            # Restore signal if needed
+            if signal_was_connected:
+                user_logged_in.connect(update_last_login)
     else:
         return
 
