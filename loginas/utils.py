@@ -2,6 +2,8 @@ import logging
 
 from django.conf import settings as django_settings
 from django.contrib.auth import get_user_model, load_backend, login, logout
+from django.contrib.auth.models import update_last_login
+from django.contrib.auth.signals import user_logged_in
 from django.contrib import messages
 from django.core.signing import TimestampSigner, SignatureExpired
 from datetime import timedelta
@@ -31,7 +33,18 @@ def login_as(user, request, store_original_user=True):
 
     # Log the user in.
     if hasattr(user, 'backend'):
-        login(request, user)
+        signal_was_connected = False
+        if not la_settings.UPDATE_LAST_LOGIN:
+            # Prevent update of user last_login
+            signal_was_connected = user_logged_in.disconnect(update_last_login)
+
+        try:
+            # Actually log user in
+            login(request, user)
+        finally:
+            # Restore signal if needed
+            if signal_was_connected:
+                user_logged_in.connect(update_last_login)
     else:
         return
 
