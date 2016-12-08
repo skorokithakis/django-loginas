@@ -79,7 +79,7 @@ from django.core.urlresolvers import reverse_lazy
 LOGOUT_URL = reverse_lazy('loginas-logout')
 ```
 
-Additionally you can also specify the redirect url for logout default is `settings.LOGIN_REDIRECT_URL`
+Additionally, you can specify the redirect url for logout (the default is `settings.LOGIN_REDIRECT_URL`).
 
 ```
 # settings.py
