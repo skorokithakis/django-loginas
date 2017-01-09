@@ -1,6 +1,53 @@
 Changelog
 =========
 
+v0.3.0 (2016-12-05)
+-------------------
+
+Features
+~~~~~~~~
+
+- Add french translation (#43) [palmitoto]
+
+Fixes
+~~~~~
+
+- Rename MESSAGE_LOGIN_REVERT to LOGINAS_MESSAGE_LOGIN_REVERT. [Stavros
+  Korokithakis]
+
+- Ability set tags on messages and a minor compatibility fix (#47)
+  [Aamir Adnan]
+
+- Remove signer error logging (#45) [palmitoto]
+
+- Remove user session flag on logout (#42) [palmitoto]
+
+  * FIX : Rm user session flag
+
+  * FIX : Remove catch KeyError
+
+v0.2.2 (2016-06-29)
+-------------------
+
+Fixes
+~~~~~
+
+- Support custom User models with customized username fields. (#36)
+  [Ganesh Prasannah (GP)]
+
+v0.2.1 (2016-06-11)
+-------------------
+
+Fixes
+~~~~~
+
+- Fix login message for unicode username (#35) [Alex Riina]
+
+Documentation
+~~~~~~~~~~~~~
+
+- Add changelog. [Stavros Korokithakis]
+
 v0.2.0 (2016-06-01)
 -------------------
 
