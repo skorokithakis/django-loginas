@@ -1,9 +1,20 @@
 language: python
 python:
-  - 2.7
-  - 3.4
-install: "pip install Django==$DJANGO_VERSION"
-script: loginas/tests/manage.py test --verbosity=2 tests
+  - 3.6
+cache: pip
+install: travis_retry pip install "virtualenv<14.0.0" tox codecov
+script: tox -e $TOX_ENV
 env:
-  - DJANGO_VERSION=1.8
-  - DJANGO_VERSION=1.9
+  - TOX_ENV=django111-py36
+  - TOX_ENV=django111-py35
+  - TOX_ENV=django111-py34
+  - TOX_ENV=django111-py27
+  - TOX_ENV=django110-py35
+  - TOX_ENV=django110-py34
+  - TOX_ENV=django110-py27
+  - TOX_ENV=django19-py35
+  - TOX_ENV=django19-py34
+  - TOX_ENV=django19-py27
+  - TOX_ENV=django18-py35
+  - TOX_ENV=django18-py34
+  - TOX_ENV=django18-py27
