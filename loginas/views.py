@@ -59,7 +59,7 @@ def user_login(request, user_id):
     else:
         raise ImproperlyConfigured("The CAN_LOGIN_AS setting is neither a valid module nor callable.")
 
-    if user.is_superuser:
+    if not la_settings.CAN_LOGIN_IN_SUPERUSER and user.is_superuser:
         messages.error(request, _("You cannot log in as superusers."),
                        extra_tags=la_settings.MESSAGE_EXTRA_TAGS)
         return redirect(request.META.get("HTTP_REFERER", "/"))
