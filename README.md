@@ -8,7 +8,7 @@ About
 
 [![Build Status](https://secure.travis-ci.org/skorokithakis/django-loginas.svg?branch=master)](http://travis-ci.org/skorokithakis/django-loginas)
 
-[![PyPI version](https://img.shields.io/pypi/v/amms_planop2xls.svg))](https://pypi.python.org/pypi/amms_planop2xls)
+[![PyPI version](https://img.shields.io/pypi/v/django-loginas.svg))](https://pypi.python.org/pypi/django-loginas)
 
 
 
