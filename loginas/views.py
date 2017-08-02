@@ -1,3 +1,5 @@
+from django.contrib.admin.utils import unquote
+
 try:
     from importlib import import_module
 except ImportError:
@@ -50,7 +52,7 @@ def _load_module(path):
 @csrf_protect
 @require_POST
 def user_login(request, user_id):
-    user = User.objects.get(pk=user_id)
+    user = User.objects.get(pk=unquote(user_id))
 
     if isinstance(la_settings.CAN_LOGIN_AS, six.string_types):
         can_login_as = _load_module(la_settings.CAN_LOGIN_AS)
