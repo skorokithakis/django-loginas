@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model, load_backend, login, logout
 from django.contrib.auth.models import update_last_login
 from django.contrib.auth.signals import user_logged_in
 from django.contrib import messages
+from django.core.exceptions import ImproperlyConfigured
 from django.core.signing import TimestampSigner, SignatureExpired
 from datetime import timedelta
 
@@ -27,9 +28,14 @@ def login_as(user, request, store_original_user=True):
     # Find a suitable backend.
     if not hasattr(user, 'backend'):
         for backend in django_settings.AUTHENTICATION_BACKENDS:
+            if not hasattr(load_backend(backend), 'get_user'):
+                continue
+                
             if user == load_backend(backend).get_user(user.pk):
                 user.backend = backend
                 break
+        else:
+            raise ImproperlyConfigured('Could not found an appropriate authentication backend')
 
     # Log the user in.
     if hasattr(user, 'backend'):
