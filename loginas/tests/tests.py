@@ -111,7 +111,8 @@ class ViewTest(TestCase):
     def assertLoginSuccess(self, resp, user):
         self.assertEqual(urlsplit(resp['Location'])[2],
                          django_settings.LOGIN_REDIRECT_URL)
-        msg = la_settings.MESSAGE_LOGIN_SWITCH.format(username=user.username)
+        msg = la_settings.MESSAGE_LOGIN_SWITCH.format(
+            username=user.__dict__[la_settings.USERNAME_FIELD])
         messages = CookieStorage(resp)._decode(resp.cookies['messages'].value)
         self.assertIn(msg, "".join([m.message for m in messages]))
 
@@ -273,3 +274,12 @@ class ViewTest(TestCase):
         self.assertCurrentUserIs(self.target_user)
         target_user = User.objects.get(id=self.target_user.id)  # refresh from db
         self.assertGreater(target_user.last_login, last_login)
+
+    @override_settings(USERNAME_FIELD='email')
+    def test_custom_username_field(self):
+        create_user("me", "pass", is_superuser=True, is_staff=True)
+        self.assertTrue(self.client.login(username="me", password="pass"))
+        self.target_user.email = "target@loginas.org"
+        self.target_user.save()
+        response = self.get_target_url()
+        self.assertLoginSuccess(response, self.target_user)

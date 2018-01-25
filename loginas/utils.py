@@ -13,7 +13,7 @@ from . import settings as la_settings
 
 signer = TimestampSigner()
 logger = logging.getLogger(__name__)
-username_field = get_user_model().USERNAME_FIELD
+username_field = la_settings.USERNAME_FIELD
 
 
 def login_as(user, request, store_original_user=True):

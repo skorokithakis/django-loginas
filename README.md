@@ -99,6 +99,16 @@ You can override this behavior like so:
 LOGINAS_UPDATE_LAST_LOGIN = True
 ```
 
+By default, the login switch message will use the `User` model's
+`USERNAME_FIELD`. You can override this behavior by passing in a different
+field name:
+
+```python
+# settings.py
+
+LOGINAS_USERNAME_FIELD = 'email'
+```
+
 Note that django-loginas won't let you log in as other superusers, to prevent
 privilege escalation from staff users to superusers. If you want to log in as
 a superuser, first demote them to a non-superuser, and then log in.
