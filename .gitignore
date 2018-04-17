@@ -6,4 +6,3 @@
 *.egg
 *.egg-info
 local_settings.py
-.idea
