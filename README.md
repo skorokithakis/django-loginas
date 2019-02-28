@@ -109,6 +109,29 @@ field name:
 LOGINAS_USERNAME_FIELD = 'email'
 ```
 
+You can add the context processor `loginas.context_processors.impersonated_session_status`
+in your settings.py file if you'd like to be able to access a variable `is_impersonated_session`
+in all your template contexts:
+
+```python
+# settings.py
+
+TEMPLATES = [
+    {
+        ...
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                ...
+                'loginas.context_processors.impersonated_session_status',
+            ],
+        },
+    },
+]
+```
+
 Note that django-loginas won't let you log in as other superusers, to prevent
 privilege escalation from staff users to superusers. If you want to log in as
 a superuser, first demote them to a non-superuser, and then log in.
