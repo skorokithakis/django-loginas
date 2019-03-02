@@ -4,6 +4,8 @@ from django.conf import settings as django_settings
 from django.contrib.auth import get_user_model, load_backend, login, logout
 from django.contrib.auth.models import update_last_login
 from django.contrib.auth.signals import user_logged_in
+from django.contrib.admin.models import LogEntry, CHANGE
+from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.core.exceptions import ImproperlyConfigured
 from django.core.signing import TimestampSigner, SignatureExpired
@@ -36,6 +38,17 @@ def login_as(user, request, store_original_user=True):
                 break
         else:
             raise ImproperlyConfigured('Could not found an appropriate authentication backend')
+
+    # Add admin audit log entry
+    change_message = 'User {0} logged in as {1}.'.format(request.user, user)
+    LogEntry.objects.log_action(
+        user_id=original_user_pk,
+        content_type_id=ContentType.objects.get_for_model(user).pk,
+        object_id=user.pk,
+        object_repr=str(user),
+        change_message=change_message,
+        action_flag=CHANGE
+    )
 
     # Log the user in.
     if hasattr(user, 'backend'):
@@ -84,3 +97,10 @@ def restore_original_login(request):
             del request.session[la_settings.USER_SESSION_FLAG]
     except SignatureExpired:
         pass
+
+
+def is_impersonated_session(request):
+    """
+    Checks if the session in the request is impersonated or not
+    """
+    return la_settings.USER_SESSION_FLAG in request.session
