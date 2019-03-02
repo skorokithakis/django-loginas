@@ -103,6 +103,4 @@ def is_impersonated_session(request):
     """
     Checks if the session in the request is impersonated or not
     """
-    if la_settings.USER_SESSION_FLAG in request.session:
-        return True
-    return False
+    return la_settings.USER_SESSION_FLAG in request.session
