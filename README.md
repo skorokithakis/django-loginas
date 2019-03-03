@@ -27,7 +27,7 @@ Installing django-loginas
 
     ```python
     # urls.py
-    urlpatterns += url(r'^admin/', include('loginas.urls')),
+    urlpatterns += path("admin/", include('loginas.urls')),
     ```
 
 * If you're using a custom User model, you'll need to add the template to it so the button shows up:
@@ -108,6 +108,26 @@ field name:
 
 LOGINAS_USERNAME_FIELD = 'email'
 ```
+
+Other implementation suggestions
+--------------------------------
+
+### Existing logout view?
+
+If you already have a logout view, you can modify to login the original user again after having had a "login as" session. Here's an example:
+
+```python
+class LogoutView(LogoutView):
+    template_name = 'myapp/logged_out.html'
+
+    @method_decorator(never_cache)
+    def dispatch(self, request, *args, **kwargs):
+        from loginas.utils import restore_original_login
+        restore_original_login(request)
+        return redirect('myapp:login')
+```
+
+### Template awareness
 
 You can add the context processor `loginas.context_processors.impersonated_session_status`
 in your settings.py file if you'd like to be able to access a variable `is_impersonated_session`
