@@ -32,7 +32,7 @@ def login_as(user, request, store_original_user=True):
         for backend in django_settings.AUTHENTICATION_BACKENDS:
             if not hasattr(load_backend(backend), 'get_user'):
                 continue
-                
+
             if user == load_backend(backend).get_user(user.pk):
                 user.backend = backend
                 break
@@ -40,15 +40,16 @@ def login_as(user, request, store_original_user=True):
             raise ImproperlyConfigured('Could not found an appropriate authentication backend')
 
     # Add admin audit log entry
-    change_message = 'User {0} logged in as {1}.'.format(request.user, user)
-    LogEntry.objects.log_action(
-        user_id=original_user_pk,
-        content_type_id=ContentType.objects.get_for_model(user).pk,
-        object_id=user.pk,
-        object_repr=str(user),
-        change_message=change_message,
-        action_flag=CHANGE
-    )
+    if original_user_pk:
+        change_message = 'User {0} logged in as {1}.'.format(request.user, user)
+        LogEntry.objects.log_action(
+            user_id=original_user_pk,
+            content_type_id=ContentType.objects.get_for_model(user).pk,
+            object_id=user.pk,
+            object_repr=str(user),
+            change_message=change_message,
+            action_flag=CHANGE
+        )
 
     # Log the user in.
     if hasattr(user, 'backend'):
