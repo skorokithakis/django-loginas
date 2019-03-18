@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 
 import sys
-from loginas import __version__
-assert sys.version >= '2.5', "Requires Python v2.5 or above."
 from distutils.core import setup
+
 from setuptools import find_packages
+
+from loginas import __version__
+
+assert sys.version >= "2.5", "Requires Python v2.5 or above."
 
 setup(
     name="django-loginas",
@@ -14,8 +17,8 @@ setup(
     url="https://github.com/stochastic-technologies/django-loginas/",
     description="""An app to add a "Log in as user" button in the Django user admin page.""",
     long_description="A short Django app that adds a button in the Django user admin page. "
-                     "When a superuser clicks the button, they are instantly logged in as that "
-                     "user.",
+    "When a superuser clicks the button, they are instantly logged in as that "
+    "user.",
     license="BSD",
     keywords="django",
     zip_safe=False,

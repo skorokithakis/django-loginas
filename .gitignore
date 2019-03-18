@@ -6,3 +6,4 @@
 *.egg
 *.egg-info
 local_settings.py
+.mypy_cache/

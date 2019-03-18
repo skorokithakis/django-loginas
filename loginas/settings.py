@@ -17,15 +17,11 @@ USERNAME_FIELD = getattr(settings, "LOGINAS_USERNAME_FIELD", get_user_model().US
 MESSAGE_LOGIN_SWITCH = getattr(
     settings,
     "LOGINAS_MESSAGE_LOGIN_SWITCH",
-    _("Your login is now switched to {username} - log out to become your original user!")
+    _("Your login is now switched to {username} - log out to become your original user!"),
 )
 
-MESSAGE_LOGIN_REVERT = getattr(
-    settings,
-    "LOGINAS_MESSAGE_LOGIN_REVERT",
-    _("You are now logged back in as {username}.")
-)
+MESSAGE_LOGIN_REVERT = getattr(settings, "LOGINAS_MESSAGE_LOGIN_REVERT", _("You are now logged back in as {username}."))
 
-UPDATE_LAST_LOGIN = getattr(settings, 'LOGINAS_UPDATE_LAST_LOGIN', False)
+UPDATE_LAST_LOGIN = getattr(settings, "LOGINAS_UPDATE_LAST_LOGIN", False)
 
-MESSAGE_EXTRA_TAGS = getattr(settings, 'LOGINAS_MESSAGE_EXTRA_TAGS', '')
+MESSAGE_EXTRA_TAGS = getattr(settings, "LOGINAS_MESSAGE_EXTRA_TAGS", "")
