@@ -1,3 +1,4 @@
+import contextlib
 import logging
 from datetime import timedelta
 
@@ -16,6 +17,25 @@ from . import settings as la_settings
 signer = TimestampSigner()
 logger = logging.getLogger(__name__)
 username_field = la_settings.USERNAME_FIELD
+
+
+@contextlib.contextmanager
+def no_update_last_login():
+    """
+    Disconnect any signals to update_last_login() for the scope of the context
+    manager, then restore.
+    """
+    kw = {"receiver": update_last_login}
+    kw_id = {"receiver": update_last_login, "dispatch_uid": "update_last_login"}
+
+    was_connected = user_logged_in.disconnect(**kw)
+    was_connected_id = not was_connected and user_logged_in.disconnect(**kw_id)
+    yield
+    # Restore signal if needed
+    if was_connected:
+        user_logged_in.connect(**kw)
+    elif was_connected_id:
+        user_logged_in.connect(**kw_id)
 
 
 def login_as(user, request, store_original_user=True):
@@ -55,18 +75,11 @@ def login_as(user, request, store_original_user=True):
     if not hasattr(user, "backend"):
         return
 
-    signal_was_connected = False
-    if not la_settings.UPDATE_LAST_LOGIN:
-        # Prevent update of user last_login
-        signal_was_connected = user_logged_in.disconnect(update_last_login)
-
-    try:
-        # Actually log user in
+    if la_settings.UPDATE_LAST_LOGIN:
         login(request, user)
-    finally:
-        # Restore signal if needed
-        if signal_was_connected:
-            user_logged_in.connect(update_last_login)
+    else:
+        with no_update_last_login():
+            login(request, user)
 
     # Set a flag on the session
     if store_original_user:

@@ -4,8 +4,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 from datetime import timedelta
 
 from django.conf import settings as django_settings
-from django.contrib.auth.models import User, update_last_login
-from django.contrib.auth.signals import user_logged_in
+from django.contrib.auth.models import User
 from django.contrib.messages.storage.cookie import CookieStorage
 from django.core.exceptions import ImproperlyConfigured
 from django.test import Client, TestCase
@@ -72,12 +71,6 @@ class ViewTest(TestCase):
         self.client.get("/")  # To get the CSRF token for next request
         assert django_settings.CSRF_COOKIE_NAME in self.client.cookies
         self.target_user = User.objects.create(username="target")
-        # setup listener
-        user_logged_in.connect(update_last_login)
-
-    def tearDown(self):
-        """Disconnect the listeners"""
-        user_logged_in.disconnect(update_last_login)
 
     def get_csrf_token_payload(self):
         return {"csrfmiddlewaretoken": self.client.cookies[django_settings.CSRF_COOKIE_NAME].value}
