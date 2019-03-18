@@ -1,4 +1,12 @@
 language: python
+addons:
+  apt:
+    sources:
+      - deadsnakes
+    packages:
+      - python3.4
+      - python3.5
+      - python3.6
 dist: xenial
 python:
   - 3.7
