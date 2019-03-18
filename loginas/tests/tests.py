@@ -8,12 +8,16 @@ from django.contrib.auth.models import User, update_last_login
 from django.contrib.auth.signals import user_logged_in
 from django.contrib.messages.storage.cookie import CookieStorage
 from django.core.exceptions import ImproperlyConfigured
-from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
 from django.test.utils import override_settings as override_settings_orig
 from django.utils import timezone
 from django.utils.six import text_type
 from loginas import settings as la_settings
+
+try:
+    from django.core.urlresolvers import reverse
+except ImportError:
+    from django.urls import reverse
 
 try:
     from urllib.parse import urlsplit
