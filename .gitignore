@@ -7,3 +7,6 @@
 *.egg-info
 local_settings.py
 *.mo
+.mypy_cache/
+build/
+dist/

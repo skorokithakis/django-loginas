@@ -1,51 +1,46 @@
+from django.contrib import messages
 from django.contrib.admin.utils import unquote
+from django.core.exceptions import ImproperlyConfigured
+from django.shortcuts import redirect
+from django.utils import six
+from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_POST
+
+from . import settings as la_settings
+from .utils import login_as, restore_original_login
 
 try:
     from importlib import import_module
 except ImportError:
-    from django.utils.importlib import import_module
-
-from django.contrib import messages
-from django.core.exceptions import ImproperlyConfigured
-from django.shortcuts import redirect
-from django.utils import six
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.http import require_POST
-from django.utils.translation import ugettext_lazy as _
-
-from .utils import login_as, restore_original_login
-from . import settings as la_settings
+    from django.utils.importlib import import_module  # type: ignore
 
 
 try:
     from django.contrib.auth import get_user_model
+
     User = get_user_model()
 except ImportError:
-    from django.contrib.auth.models import User
+    from django.contrib.auth.models import User  # type: ignore
 
 
 def _load_module(path):
     """Code to load create user module. Copied off django-browserid."""
 
-    i = path.rfind('.')
-    module, attr = path[:i], path[i + 1:]
+    i = path.rfind(".")
+    module, attr = path[:i], path[i + 1 :]
 
     try:
         mod = import_module(module)
     except ImportError:
-        raise ImproperlyConfigured(
-            'Error importing CAN_LOGIN_AS function: {}'.format(module)
-        )
+        raise ImproperlyConfigured("Error importing CAN_LOGIN_AS function: {}".format(module))
     except ValueError:
-        raise ImproperlyConfigured('Error importing CAN_LOGIN_AS'
-                                   ' function. Is CAN_LOGIN_AS a'
-                                   ' string?')
+        raise ImproperlyConfigured("Error importing CAN_LOGIN_AS" " function. Is CAN_LOGIN_AS a" " string?")
 
     try:
         can_login_as = getattr(mod, attr)
     except AttributeError:
-        raise ImproperlyConfigured('Module {0} does not define a {1} '
-                                   'function.'.format(module, attr))
+        raise ImproperlyConfigured("Module {0} does not define a {1} " "function.".format(module, attr))
     return can_login_as
 
 
@@ -62,8 +57,7 @@ def user_login(request, user_id):
         raise ImproperlyConfigured("The CAN_LOGIN_AS setting is neither a valid module nor callable.")
 
     if not can_login_as(request, user):
-        messages.error(request, _("You do not have permission to do that."),
-                       extra_tags=la_settings.MESSAGE_EXTRA_TAGS)
+        messages.error(request, _("You do not have permission to do that."), extra_tags=la_settings.MESSAGE_EXTRA_TAGS)
         return redirect(request.META.get("HTTP_REFERER", "/"))
 
     login_as(user, request)

@@ -4,7 +4,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 
 @ensure_csrf_cookie
 def index(request):
-    return HttpResponse('')
+    return HttpResponse("")
 
 
 def current_user(request):
