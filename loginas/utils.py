@@ -52,21 +52,21 @@ def login_as(user, request, store_original_user=True):
         )
 
     # Log the user in.
-    if hasattr(user, "backend"):
-        signal_was_connected = False
-        if not la_settings.UPDATE_LAST_LOGIN:
-            # Prevent update of user last_login
-            signal_was_connected = user_logged_in.disconnect(update_last_login)
-
-        try:
-            # Actually log user in
-            login(request, user)
-        finally:
-            # Restore signal if needed
-            if signal_was_connected:
-                user_logged_in.connect(update_last_login)
-    else:
+    if not hasattr(user, "backend"):
         return
+
+    signal_was_connected = False
+    if not la_settings.UPDATE_LAST_LOGIN:
+        # Prevent update of user last_login
+        signal_was_connected = user_logged_in.disconnect(update_last_login)
+
+    try:
+        # Actually log user in
+        login(request, user)
+    finally:
+        # Restore signal if needed
+        if signal_was_connected:
+            user_logged_in.connect(update_last_login)
 
     # Set a flag on the session
     if store_original_user:
