@@ -41,14 +41,14 @@ def login_as(user, request, store_original_user=True):
 
     # Add admin audit log entry
     if original_user_pk:
-        change_message = 'User {0} logged in as {1}.'.format(request.user, user)
+        change_message = "User {0} logged in as {1}.".format(request.user, user)
         LogEntry.objects.log_action(
             user_id=original_user_pk,
             content_type_id=ContentType.objects.get_for_model(user).pk,
             object_id=user.pk,
             object_repr=str(user),
             change_message=change_message,
-            action_flag=CHANGE
+            action_flag=CHANGE,
         )
 
     # Log the user in.
