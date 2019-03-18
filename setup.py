@@ -4,7 +4,7 @@ import sys
 
 from loginas import __version__
 
-assert sys.version >= "2.5", "Requires Python v2.5 or above."
+assert sys.version >= "3.4", "Requires Python v3.4 or above."
 
 try:
     from setuptools import setup
