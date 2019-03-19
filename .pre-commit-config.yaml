@@ -18,3 +18,10 @@ repos:
     hooks:
     - id: mypy
       args: [-s]
+-   repo: local
+    hooks:
+    - id: gitchangelog
+      language: system
+      name: Generate changelog
+      entry: bash -c "gitchangelog > CHANGELOG.md"
+      stages: [commit]
