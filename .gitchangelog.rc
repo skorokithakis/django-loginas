@@ -61,9 +61,10 @@ ignore_regexps = [
         r'@cosmetic', r'!cosmetic',
         r'@refactor', r'!refactor',
         r'@wip', r'!wip',
-        r'^([cC]hg|[fF]ix|[nN]ew)\s*:\s*[p|P]kg:',
-        r'^([cC]hg|[fF]ix|[nN]ew)\s*:\s*[d|D]ev:',
+        r'^([cC]hg|[fF]ix|[nN]ew|[fF]eat)\s*:\s*[p|P]kg:',
+        r'^([cC]hg|[fF]ix|[nN]ew|[Ff]eat)\s*:\s*[d|D]ev:',
         r'^(.{3,3}\s*:)?\s*[fF]irst commit.?\s*$',
+        r'^\d+\.\d+\.\d+$',
   ]
 
 
@@ -74,15 +75,20 @@ ignore_regexps = [
 ## titles are the label, and a commit is classified under this section if any
 ## of the regexps associated is matching.
 ##
+## Please note that ``section_regexps`` will only classify commits and won't
+## make any changes to the contents. So you'll probably want to go check
+## ``subject_process`` (or ``body_process``) to do some changes to the subject,
+## whenever you are tweaking this variable.
+##
 section_regexps = [
     ('Features', [
-        r'^[Ff]eat(ure|)\s*:\s*([^\n]*)$',
+	r'^([nN]ew|[fF]eat)\s*:\s*((dev|use?r|pkg|test|doc)\s*:\s*)?([^\n]*)$',
+     ]),
+    ('Changes', [
+        r'^[cC]hg\s*:\s*((dev|use?r|pkg|test|doc)\s*:\s*)?([^\n]*)$',
      ]),
     ('Fixes', [
-        r'^[Ff]ix\s*:\s*([^\n]*)$',
-     ]),
-    ('Documentation', [
-        r'^[Dd]oc\s*:\s*([^\n]*)$',
+        r'^[fF]ix\s*:\s*((dev|use?r|pkg|test|doc)\s*:\s*)?([^\n]*)$',
      ]),
 ]
 
@@ -118,7 +124,8 @@ section_regexps = [
 #body_process = Wrap(regexp=r'\n(?=\w+\s*:)') | Indent(chars="  ")
 #body_process = Wrap(regexp=r'\n(?=\w+\s*:)')
 #body_process = noop
-body_process = ReSub(r'((^|\n)[A-Z]\w+(-\w+)*: .*(\n\s+.*)*)+$', r'') | strip
+#body_process = ReSub(r'((^|\n)[A-Z]\w+(-\w+)*: .*(\n\s+.*)*)+$', r'') | strip
+body_process = lambda text: ""
 
 
 ## ``subject_process`` is a callable
@@ -128,8 +135,9 @@ body_process = ReSub(r'((^|\n)[A-Z]\w+(-\w+)*: .*(\n\s+.*)*)+$', r'') | strip
 ##
 ## Available constructs are those listed in ``body_process`` doc.
 subject_process = (strip |
-    ReSub(r'^([fF]ix|[fF]eat|[fF]eature|[dD]oc)\s*:\s*((dev|use?r|pkg|test|doc)\s*:\s*)?([^\n@]*)(@[a-z]+\s+)*$', r'\4') |
+    ReSub(r'^([cC]hg|[fF]ix|[nN]ew|[fF]eat)\s*:\s*((dev|use?r|pkg|test|doc)\s*:\s*)?([^\n@]*)(@[a-z]+\s+)*$', r'\4') |
     ucfirst | final_dot)
+
 
 ## ``tag_filter_regexp`` is a regexp
 ##
