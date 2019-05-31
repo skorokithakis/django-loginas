@@ -33,14 +33,20 @@ def _load_module(path):
     try:
         mod = import_module(module)
     except ImportError:
-        raise ImproperlyConfigured("Error importing CAN_LOGIN_AS function: {}".format(module))
+        raise ImproperlyConfigured(
+            "Error importing CAN_LOGIN_AS function: {}".format(module)
+        )
     except ValueError:
-        raise ImproperlyConfigured("Error importing CAN_LOGIN_AS" " function. Is CAN_LOGIN_AS a" " string?")
+        raise ImproperlyConfigured(
+            "Error importing CAN_LOGIN_AS" " function. Is CAN_LOGIN_AS a" " string?"
+        )
 
     try:
         can_login_as = getattr(mod, attr)
     except AttributeError:
-        raise ImproperlyConfigured("Module {0} does not define a {1} " "function.".format(module, attr))
+        raise ImproperlyConfigured(
+            "Module {0} does not define a {1} " "function.".format(module, attr)
+        )
     return can_login_as
 
 
@@ -54,10 +60,17 @@ def user_login(request, user_id):
     elif hasattr(la_settings.CAN_LOGIN_AS, "__call__"):
         can_login_as = la_settings.CAN_LOGIN_AS
     else:
-        raise ImproperlyConfigured("The CAN_LOGIN_AS setting is neither a valid module nor callable.")
+        raise ImproperlyConfigured(
+            "The CAN_LOGIN_AS setting is neither a valid module nor callable."
+        )
 
     if not can_login_as(request, user):
-        messages.error(request, _("You do not have permission to do that."), extra_tags=la_settings.MESSAGE_EXTRA_TAGS)
+        messages.error(
+            request,
+            _("You do not have permission to do that."),
+            extra_tags=la_settings.MESSAGE_EXTRA_TAGS,
+            fail_silently=True,
+        )
         return redirect(request.META.get("HTTP_REFERER", "/"))
 
     login_as(user, request)
