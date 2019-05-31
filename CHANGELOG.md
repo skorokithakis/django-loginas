@@ -9,6 +9,9 @@
 
 * Drop Python 2 support. [Stavros Korokithakis]
 
+**Fixes**
+
+* Allow running without the messages framework enabled [Jerome Leclanche]
 
 ## v0.3.4 (2018-04-17)
 

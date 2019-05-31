@@ -69,6 +69,7 @@ def user_login(request, user_id):
             request,
             _("You do not have permission to do that."),
             extra_tags=la_settings.MESSAGE_EXTRA_TAGS,
+            fail_silently=True,
         )
         return redirect(request.META.get("HTTP_REFERER", "/"))
 

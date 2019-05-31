@@ -91,6 +91,7 @@ def login_as(user, request, store_original_user=True):
                 username=user.__dict__[username_field]
             ),
             extra_tags=la_settings.MESSAGE_EXTRA_TAGS,
+            fail_silently=True,
         )
         request.session[la_settings.USER_SESSION_FLAG] = signer.sign(original_user_pk)
 
