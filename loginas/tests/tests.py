@@ -73,45 +73,31 @@ class ViewTest(TestCase):
         self.target_user = User.objects.create(username="target")
 
     def get_csrf_token_payload(self):
-        return {
-            "csrfmiddlewaretoken": self.client.cookies[
-                django_settings.CSRF_COOKIE_NAME
-            ].value
-        }
+        return {"csrfmiddlewaretoken": self.client.cookies[django_settings.CSRF_COOKIE_NAME].value}
 
     def get_target_url(self, target_user=None):
         if target_user is None:
             target_user = self.target_user
         response = self.client.post(
-            reverse("loginas-user-login", kwargs={"user_id": target_user.id}),
-            data=self.get_csrf_token_payload(),
+            reverse("loginas-user-login", kwargs={"user_id": target_user.id}), data=self.get_csrf_token_payload()
         )
         self.assertEqual(response.status_code, 302)
         return response
 
     def assertCurrentUserIs(self, user):
         id_ = text_type(user.id if user is not None else None).encode("utf-8")
-        r = self.client.post(
-            reverse("current_user"), data=self.get_csrf_token_payload()
-        )
+        r = self.client.post(reverse("current_user"), data=self.get_csrf_token_payload())
         self.assertEqual(r.content, id_)
 
     def assertLoginError(self, resp):
         self.assertEqual(urlsplit(resp["Location"])[2], "/")
 
         messages = CookieStorage(resp)._decode(resp.cookies["messages"].value)
-        self.assertIn(
-            (40, "You do not have permission to do that."),
-            [(m.level, m.message) for m in messages],
-        )
+        self.assertIn((40, "You do not have permission to do that."), [(m.level, m.message) for m in messages])
 
     def assertLoginSuccess(self, resp, user):
-        self.assertEqual(
-            urlsplit(resp["Location"])[2], django_settings.LOGIN_REDIRECT_URL
-        )
-        msg = la_settings.MESSAGE_LOGIN_SWITCH.format(
-            username=user.__dict__[la_settings.USERNAME_FIELD]
-        )
+        self.assertEqual(urlsplit(resp["Location"])[2], django_settings.LOGIN_REDIRECT_URL)
+        msg = la_settings.MESSAGE_LOGIN_SWITCH.format(username=user.__dict__[la_settings.USERNAME_FIELD])
         messages = CookieStorage(resp)._decode(resp.cookies["messages"].value)
         self.assertIn(msg, "".join([m.message for m in messages]))
 
@@ -178,13 +164,9 @@ class ViewTest(TestCase):
             self.assertRaisesExact(ImproperlyConfigured(message), self.get_target_url)
 
         with override_settings(CAN_LOGIN_AS="loginas.tests.invalid_func"):
-            assertMessage(
-                "Module loginas.tests does not define a invalid_func function."
-            )
+            assertMessage("Module loginas.tests does not define a invalid_func function.")
         with override_settings(CAN_LOGIN_AS="loginas.tests.invalid_path.func"):
-            assertMessage(
-                "Error importing CAN_LOGIN_AS function: loginas.tests.invalid_path"
-            )
+            assertMessage("Error importing CAN_LOGIN_AS function: loginas.tests.invalid_path")
 
     def test_as_superuser(self):
         create_user("me", "pass", is_superuser=True, is_staff=True)
@@ -219,8 +201,7 @@ class ViewTest(TestCase):
         self.assertTrue(self.client.login(username="me", password="pass"))
 
         response = self.client.post(
-            reverse("loginas-user-login", kwargs={"user_id": self.target_user.id}),
-            data=self.get_csrf_token_payload(),
+            reverse("loginas-user-login", kwargs={"user_id": self.target_user.id}), data=self.get_csrf_token_payload()
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(urlsplit(response["Location"])[2], "/another-redirect")
