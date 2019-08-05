@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.admin.utils import unquote
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.shortcuts import redirect
 from django.utils import six
 from django.utils.translation import ugettext_lazy as _
@@ -56,10 +56,16 @@ def user_login(request, user_id):
     else:
         raise ImproperlyConfigured("The CAN_LOGIN_AS setting is neither a valid module nor callable.")
 
-    if not can_login_as(request, user):
+    no_permission_error = None
+    try:
+        if not can_login_as(request, user):
+            no_permission_error = _("You do not have permission to do that.")
+    except PermissionDenied as e:
+        no_permission_error = str(e)
+    if no_permission_error is not None:
         messages.error(
             request,
-            _("You do not have permission to do that."),
+            no_permission_error,
             extra_tags=la_settings.MESSAGE_EXTRA_TAGS,
             fail_silently=True,
         )
