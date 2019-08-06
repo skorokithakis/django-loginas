@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function, unicode_literals
 
+import unittest
 from datetime import timedelta
 
+import django
 from django.conf import settings as django_settings
 from django.contrib.auth.models import User
 from django.contrib.messages.storage.cookie import CookieStorage
@@ -64,6 +66,16 @@ def login_as_nonstaff(request, user):
 
 def can_login_as_always_raise_permission_denied(request, user):
     raise PermissionDenied("You can't login as target user")
+
+
+class WrongAuthBackend:
+    """
+    An authentication backend is a class that implements two required methods: get_user(user_id) and
+    authenticate(**credentials). Unfortunately, some libraries don't comply with this interface (e.g.
+    `django-rules` with ObjectPermissionBackend) and omit the required `get_user` method.
+    """
+    def authenticate(self, *args, **kwargs):
+        return None
 
 
 class ViewTest(TestCase):
@@ -184,6 +196,19 @@ class ViewTest(TestCase):
         self.assertTrue(self.client.login(username="me", password="pass"))
         self.assertLoginError(self.get_target_url())
         self.assertCurrentUserIs(user)
+
+    @unittest.skipIf(django.VERSION[:2] < (1, 10), "Django < 1.10 allows to authenticate as inactive user")
+    def test_auth_backends_user_not_found(self):
+        superuser = create_user("me", "pass", is_superuser=True, is_staff=True)
+        self.assertTrue(self.client.login(username="me", password="pass"))
+        self.assertCurrentUserIs(superuser)
+        # ModelBackend should authenticate superuser but prevent this action for inactive user
+        inactive_user = create_user("name", "pass", is_active=False)
+        with self.settings(AUTHENTICATION_BACKENDS=('django.contrib.auth.backends.ModelBackend',
+                                                    'tests.WrongAuthBackend',)):
+            message = "Could not find an appropriate authentication backend"
+            self.assertLoginError(self.get_target_url(target_user=inactive_user), message=message)
+        self.assertCurrentUserIs(superuser)
 
     @override_settings(CAN_LOGIN_AS=can_login_as_always_raise_permission_denied)
     def test_can_login_as_permission_denied(self):
