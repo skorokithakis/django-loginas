@@ -6,7 +6,7 @@ from datetime import timedelta
 from django.conf import settings as django_settings
 from django.contrib.auth.models import User
 from django.contrib.messages.storage.cookie import CookieStorage
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.test import Client, TestCase
 from django.test.utils import override_settings as override_settings_orig
 from django.utils import timezone
@@ -62,6 +62,10 @@ def login_as_nonstaff(request, user):
     return request.user.is_superuser or (request.user.is_staff and not user.is_staff)
 
 
+def can_login_as_always_raise_permission_denied(request, user):
+    raise PermissionDenied("You can't login as target user")
+
+
 class ViewTest(TestCase):
 
     """Tests for user_login view"""
@@ -89,11 +93,11 @@ class ViewTest(TestCase):
         r = self.client.post(reverse("current_user"), data=self.get_csrf_token_payload())
         self.assertEqual(r.content, id_)
 
-    def assertLoginError(self, resp):
+    def assertLoginError(self, resp, message=None):
         self.assertEqual(urlsplit(resp["Location"])[2], "/")
-
+        message = message or "You do not have permission to do that."
         messages = CookieStorage(resp)._decode(resp.cookies["messages"].value)
-        self.assertIn((40, "You do not have permission to do that."), [(m.level, m.message) for m in messages])
+        self.assertIn((40, message), [(m.level, m.message) for m in messages])
 
     def assertLoginSuccess(self, resp, user):
         self.assertEqual(urlsplit(resp["Location"])[2], django_settings.LOGIN_REDIRECT_URL)
@@ -180,6 +184,11 @@ class ViewTest(TestCase):
         self.assertTrue(self.client.login(username="me", password="pass"))
         self.assertLoginError(self.get_target_url())
         self.assertCurrentUserIs(user)
+
+    @override_settings(CAN_LOGIN_AS=can_login_as_always_raise_permission_denied)
+    def test_can_login_as_permission_denied(self):
+        message = "You can't login as target user"
+        self.assertLoginError(self.get_target_url(), message=message)
 
     def test_as_anonymous_user(self):
         self.assertLoginError(self.get_target_url())

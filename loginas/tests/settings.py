@@ -9,6 +9,7 @@ INSTALLED_APPS = (
     "django.contrib.sessions",
     "django.contrib.auth",
     "django.contrib.admin",
+    "django.contrib.messages",
     "loginas",
     "loginas.tests",
 )
