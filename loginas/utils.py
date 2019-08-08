@@ -57,7 +57,7 @@ def login_as(user, request, store_original_user=True):
                 user.backend = backend
                 break
         else:
-            raise ImproperlyConfigured("Could not found an appropriate authentication backend")
+            raise ImproperlyConfigured("Could not find an appropriate authentication backend")
 
     # Add admin audit log entry
     if original_user_pk:

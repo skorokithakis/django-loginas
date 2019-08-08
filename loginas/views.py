@@ -55,7 +55,6 @@ def user_login(request, user_id):
         can_login_as = la_settings.CAN_LOGIN_AS
     else:
         raise ImproperlyConfigured("The CAN_LOGIN_AS setting is neither a valid module nor callable.")
-
     no_permission_error = None
     try:
         if not can_login_as(request, user):
@@ -71,7 +70,16 @@ def user_login(request, user_id):
         )
         return redirect(request.META.get("HTTP_REFERER", "/"))
 
-    login_as(user, request)
+    try:
+        login_as(user, request)
+    except ImproperlyConfigured as e:
+        messages.error(
+            request,
+            str(e),
+            extra_tags=la_settings.MESSAGE_EXTRA_TAGS,
+            fail_silently=True,
+        )
+        return redirect(request.META.get("HTTP_REFERER", "/"))
 
     return redirect(la_settings.LOGIN_REDIRECT)
 
