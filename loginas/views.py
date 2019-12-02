@@ -61,23 +61,13 @@ def user_login(request, user_id):
     except PermissionDenied as e:
         no_permission_error = str(e)
     if no_permission_error is not None:
-        messages.error(
-            request,
-            no_permission_error,
-            extra_tags=la_settings.MESSAGE_EXTRA_TAGS,
-            fail_silently=True,
-        )
+        messages.error(request, no_permission_error, extra_tags=la_settings.MESSAGE_EXTRA_TAGS, fail_silently=True)
         return redirect(request.META.get("HTTP_REFERER", "/"))
 
     try:
         login_as(user, request)
     except ImproperlyConfigured as e:
-        messages.error(
-            request,
-            str(e),
-            extra_tags=la_settings.MESSAGE_EXTRA_TAGS,
-            fail_silently=True,
-        )
+        messages.error(request, str(e), extra_tags=la_settings.MESSAGE_EXTRA_TAGS, fail_silently=True)
         return redirect(request.META.get("HTTP_REFERER", "/"))
 
     return redirect(la_settings.LOGIN_REDIRECT)

@@ -1,6 +1,21 @@
 # Changelog
 
 
+## Unreleased
+
+### Features
+
+* Remove six and Py2 support. [Stavros Korokithakis]
+
+### Fixes
+
+* Don't crash when session doesn't exist (#86) [Gady Pitaru]
+
+* Catch ImproperlyConfigured exc in user_login view (#85) [Sergei Zherevchuk]
+
+* Add PermissionDenied support for `can_login_as` (#84) [Sergei Zherevchuk]
+
+
 ## v0.3.7 (2019-06-02)
 
 ### Features

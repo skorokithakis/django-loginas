@@ -123,4 +123,4 @@ def is_impersonated_session(request):
     """
     Checks if the session in the request is impersonated or not
     """
-    return hasattr(request, 'session') and la_settings.USER_SESSION_FLAG in request.session
+    return hasattr(request, "session") and la_settings.USER_SESSION_FLAG in request.session

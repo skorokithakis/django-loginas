@@ -73,6 +73,7 @@ class WrongAuthBackend:
     authenticate(**credentials). Unfortunately, some libraries don't comply with this interface (e.g.
     `django-rules` with ObjectPermissionBackend) and omit the required `get_user` method.
     """
+
     def authenticate(self, *args, **kwargs):
         return None
 
@@ -203,8 +204,9 @@ class ViewTest(TestCase):
         self.assertCurrentUserIs(superuser)
         # ModelBackend should authenticate superuser but prevent this action for inactive user
         inactive_user = create_user("name", "pass", is_active=False)
-        with self.settings(AUTHENTICATION_BACKENDS=('django.contrib.auth.backends.ModelBackend',
-                                                    'tests.WrongAuthBackend',)):
+        with self.settings(
+            AUTHENTICATION_BACKENDS=("django.contrib.auth.backends.ModelBackend", "tests.WrongAuthBackend")
+        ):
             message = "Could not find an appropriate authentication backend"
             self.assertLoginError(self.get_target_url(target_user=inactive_user), message=message)
         self.assertCurrentUserIs(superuser)
