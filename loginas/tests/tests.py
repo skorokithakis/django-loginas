@@ -12,7 +12,6 @@ from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.test import Client, TestCase
 from django.test.utils import override_settings as override_settings_orig
 from django.utils import timezone
-from django.utils.six import text_type
 from loginas import settings as la_settings
 
 try:
@@ -101,7 +100,7 @@ class ViewTest(TestCase):
         return response
 
     def assertCurrentUserIs(self, user):
-        id_ = text_type(user.id if user is not None else None).encode("utf-8")
+        id_ = str(user.id if user is not None else None).encode("utf-8")
         r = self.client.post(reverse("current_user"), data=self.get_csrf_token_payload())
         self.assertEqual(r.content, id_)
 

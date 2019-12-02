@@ -2,7 +2,6 @@ from django.contrib import messages
 from django.contrib.admin.utils import unquote
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.shortcuts import redirect
-from django.utils import six
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
@@ -49,7 +48,7 @@ def _load_module(path):
 def user_login(request, user_id):
     user = User.objects.get(pk=unquote(user_id))
 
-    if isinstance(la_settings.CAN_LOGIN_AS, six.string_types):
+    if isinstance(la_settings.CAN_LOGIN_AS, str):
         can_login_as = _load_module(la_settings.CAN_LOGIN_AS)
     elif hasattr(la_settings.CAN_LOGIN_AS, "__call__"):
         can_login_as = la_settings.CAN_LOGIN_AS
