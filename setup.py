@@ -26,4 +26,5 @@ setup(
     include_package_data=True,
     packages=["loginas"],
     package_dir={"loginas": "loginas"},
+    python_requires='>3.3',
 )
