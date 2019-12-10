@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.admin.utils import unquote
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.shortcuts import redirect
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
 
