@@ -1,7 +1,7 @@
 # Changelog
 
 
-## Unreleased
+## v0.3.8 (2019-12-05)
 
 ### Features
 
