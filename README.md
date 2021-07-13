@@ -101,8 +101,8 @@ You can override this behavior like so:
 LOGINAS_UPDATE_LAST_LOGIN = True
 ```
 
-By default, the login switch message will use the `User` model's
-`USERNAME_FIELD`. You can override this behavior by passing in a different
+By default, the login switch message will generate [Django admin `LogEntry`](https://docs.djangoproject.com/en/3.2/ref/contrib/admin/#logentry-objects) messages using the `User` model's
+`USERNAME_FIELD` like `f"User {impersonator_user.getattr(USERNAME_FIELD)} logged in as {impersonated_user.getattr(USERNAME_FIELD)}."` You can override this behavior by passing in a different
 field name:
 
 ```python
