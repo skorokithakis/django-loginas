@@ -6,7 +6,6 @@ About
 
 "Login as user" for the Django admin.
 
-[![Build Status](https://secure.travis-ci.org/skorokithakis/django-loginas.svg?branch=master)](http://travis-ci.org/skorokithakis/django-loginas)
 [![PyPI version](https://img.shields.io/pypi/v/django-loginas.svg)](https://pypi.python.org/pypi/django-loginas)
 
 `loginas` supports Python 3 only, as of version 0.4. If you're on 2, use
