@@ -14,7 +14,7 @@ jobs:
       - uses: psf/black@stable
         with:
           src: ./loginas
-          version: "21.5b1"
+          version: "18.9b0"
 
   flake8:
     runs-on: ubuntu-latest
