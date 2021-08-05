@@ -1,6 +1,13 @@
 # Changelog
 
 
+## Unreleased
+
+### Fixes
+
+* Modernize Django URL's (#93) [Adam Johnson]
+
+
 ## v0.3.8 (2019-12-05)
 
 ### Features
