@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/setup-python@v2
       - uses: actions/checkout@v2
-      - run: pip install gitchangelog pre-commit
+      - run: pip install pre-commit
       - run: pre-commit run -a --hook-stage=manual
 
   test:
