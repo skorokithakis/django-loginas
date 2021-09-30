@@ -19,25 +19,25 @@ Installing django-loginas
 
 * Add the `loginas` app to your `INSTALLED_APPS`:
 
-    ```python
-    # settings.py
-    INSTALLED_APPS = [... 'loginas', ...]
-    ```
+```python
+# settings.py
+INSTALLED_APPS = [... 'loginas', ...]
+```
 
 * Add the `loginas` URL to your `urls.py`:
 
-    ```python
-    # urls.py
-    urlpatterns += path("admin/", include('loginas.urls')),
-    ```
+```python
+# urls.py
+urlpatterns += path("admin/", include('loginas.urls')),
+```
 
 * If you're using a custom User model, you'll need to add the template to it so the button shows up:
 
-    ```python
-    # admin.py
-    class YourUserAdmin(ModelAdmin):
-        change_form_template = 'loginas/change_form.html'
-    ```
+```python
+# admin.py
+class YourUserAdmin(ModelAdmin):
+    change_form_template = 'loginas/change_form.html'
+```
 
 At this point, you should be good to go. Just visit the Django admin, navigate to a user and you should see the "Log
 in as user" button at the top right of the screen.
