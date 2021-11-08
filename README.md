@@ -28,7 +28,11 @@ INSTALLED_APPS = [... 'loginas', ...]
 
 ```python
 # urls.py
-urlpatterns += path("admin/", include('loginas.urls')),
+urlpatterns = [
+    # from Django 3.2 on, make sure to add loginas urls before the admin site urls, i.e.:
+    path('admin/', include('loginas.urls')),
+    path('admin/', admin.site.urls),
+]
 ```
 
 * If you're using a custom User model, you'll need to add the template to it so the button shows up:
