@@ -1,2 +1,2 @@
-recursive-include loginas *.py *.html
+recursive-include loginas *.py *.html *mo *po
 include README.md LICENSE
