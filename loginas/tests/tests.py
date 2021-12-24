@@ -12,6 +12,7 @@ from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.test import Client, TestCase
 from django.test.utils import override_settings as override_settings_orig
 from django.utils import timezone
+
 from loginas import settings as la_settings
 
 try:
