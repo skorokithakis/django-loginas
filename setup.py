@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 
-import sys
-
 from loginas import __version__
-
-assert sys.version >= "3.4", "Requires Python v3.4 or above."
 
 try:
     from setuptools import setup
@@ -26,5 +22,4 @@ setup(
     include_package_data=True,
     packages=["loginas"],
     package_dir={"loginas": "loginas"},
-    python_requires=">3.3",
 )
