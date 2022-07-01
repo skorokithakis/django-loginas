@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.utils import unquote
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
@@ -82,4 +83,9 @@ def user_logout(request):
     """
     restore_original_login(request)
 
-    return redirect(la_settings.LOGOUT_REDIRECT)
+    try:
+        url = request.META.get("HTTP_REFERER", "/").split('?next=')[1]
+    except IndexError:
+        url = settings.LOGINAS_LOGOUT_REDIRECT_URL
+
+    return redirect(url)
