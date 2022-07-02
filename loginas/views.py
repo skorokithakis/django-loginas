@@ -86,6 +86,6 @@ def user_logout(request):
     try:
         url = request.META.get("HTTP_REFERER", "/").split('?next=')[1]
     except IndexError:
-        url = settings.LOGINAS_LOGOUT_REDIRECT_URL
+        url = la_settings.LOGOUT_REDIRECT
 
     return redirect(url)
