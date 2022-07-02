@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 from loginas import __version__
 
 try:

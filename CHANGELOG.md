@@ -1,6 +1,13 @@
 # Changelog
 
 
+## Unreleased
+
+### Fixes
+
+* Updates for Python 3.10 and Django 4.0 (#99) [Tom Carrick]
+
+
 ## v0.3.10 (2021-09-30)
 
 ### Fixes

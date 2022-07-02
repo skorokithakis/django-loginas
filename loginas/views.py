@@ -1,13 +1,15 @@
 from django.contrib import messages
 from django.contrib.admin.utils import unquote
-from django.core.exceptions import ImproperlyConfigured, PermissionDenied
+from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
 
 from . import settings as la_settings
-from .utils import login_as, restore_original_login
+from .utils import login_as
+from .utils import restore_original_login
 
 try:
     from importlib import import_module
@@ -32,14 +34,20 @@ def _load_module(path):
     try:
         mod = import_module(module)
     except ImportError:
-        raise ImproperlyConfigured("Error importing CAN_LOGIN_AS function: {}".format(module))
+        raise ImproperlyConfigured(
+            "Error importing CAN_LOGIN_AS function: {}".format(module)
+        )
     except ValueError:
-        raise ImproperlyConfigured("Error importing CAN_LOGIN_AS" " function. Is CAN_LOGIN_AS a" " string?")
+        raise ImproperlyConfigured(
+            "Error importing CAN_LOGIN_AS" " function. Is CAN_LOGIN_AS a" " string?"
+        )
 
     try:
         can_login_as = getattr(mod, attr)
     except AttributeError:
-        raise ImproperlyConfigured("Module {0} does not define a {1} " "function.".format(module, attr))
+        raise ImproperlyConfigured(
+            "Module {0} does not define a {1} " "function.".format(module, attr)
+        )
     return can_login_as
 
 
@@ -53,7 +61,9 @@ def user_login(request, user_id):
     elif hasattr(la_settings.CAN_LOGIN_AS, "__call__"):
         can_login_as = la_settings.CAN_LOGIN_AS
     else:
-        raise ImproperlyConfigured("The CAN_LOGIN_AS setting is neither a valid module nor callable.")
+        raise ImproperlyConfigured(
+            "The CAN_LOGIN_AS setting is neither a valid module nor callable."
+        )
     no_permission_error = None
     try:
         if not can_login_as(request, user):
@@ -61,13 +71,23 @@ def user_login(request, user_id):
     except PermissionDenied as e:
         no_permission_error = str(e)
     if no_permission_error is not None:
-        messages.error(request, no_permission_error, extra_tags=la_settings.MESSAGE_EXTRA_TAGS, fail_silently=True)
+        messages.error(
+            request,
+            no_permission_error,
+            extra_tags=la_settings.MESSAGE_EXTRA_TAGS,
+            fail_silently=True,
+        )
         return redirect(request.META.get("HTTP_REFERER", "/"))
 
     try:
         login_as(user, request)
     except ImproperlyConfigured as e:
-        messages.error(request, str(e), extra_tags=la_settings.MESSAGE_EXTRA_TAGS, fail_silently=True)
+        messages.error(
+            request,
+            str(e),
+            extra_tags=la_settings.MESSAGE_EXTRA_TAGS,
+            fail_silently=True,
+        )
         return redirect(request.META.get("HTTP_REFERER", "/"))
 
     return redirect(la_settings.LOGIN_REDIRECT)
