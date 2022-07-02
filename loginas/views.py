@@ -103,7 +103,7 @@ def user_logout(request):
     restore_original_login(request)
 
     try:
-        url = request.META.get("HTTP_REFERER", "/").split('?next=')[1]
+        url = request.META.get("HTTP_REFERER", "/").split("?next=")[1]
     except IndexError:
         url = la_settings.LOGOUT_REDIRECT
 

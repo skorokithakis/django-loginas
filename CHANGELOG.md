@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+### Features
+
+* Redirect logouts to the 'next' url (#100) [Rodolfo Torres]
+
 ### Fixes
 
 * Updates for Python 3.10 and Django 4.0 (#99) [Tom Carrick]
