@@ -1,6 +1,13 @@
 # Changelog
 
 
+## Unreleased
+
+### Features
+
+* Add the Persian translation files (#106) [Mahdi Namaki]
+
+
 ## v0.3.11 (2022-10-04)
 
 ### Features
