@@ -43,6 +43,10 @@ class YourUserAdmin(ModelAdmin):
     change_form_template = 'loginas/change_form.html'
 ```
 
+Alternatively, you can add a `change_form.html` template containing just `{% extends 'loginas/change_form.html' %}`
+to your project under the path expected by your custom User model, e.g.
+`.../templates/<app_label>/<model_name>/change_form.html`.
+
 At this point, you should be good to go. Just visit the Django admin, navigate to a user and you should see the "Log
 in as user" button at the top right of the screen.
 
