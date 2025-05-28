@@ -118,6 +118,24 @@ field name:
 LOGINAS_USERNAME_FIELD = 'email'
 ```
 
+To run on servers with a Content Security Policy that blocks inline
+javascript, you can configure loading the javascript from a seperate file:
+
+
+```python
+# settings.py
+
+LOGINAS_CSP_FRIENDLY = True
+```
+
+For this to work you must make sure the static javacript can be found. [See
+documentation](https://docs.djangoproject.com/en/5.2/ref/settings/#static-files).
+This example uses a symlink:
+
+```sh
+ln -s <path_to_site_packages>/loginas/static/loginas static/loginas
+```
+
 Other implementation suggestions
 --------------------------------
 
