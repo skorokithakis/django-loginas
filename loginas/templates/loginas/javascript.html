@@ -1,0 +1,14 @@
+{% load static %}
+
+{% if csp_aware %}
+	<script type="text/javascript" src="{% static 'loginas/loginas.js' %}"></script>
+{% else %}
+    <script>
+    django.jQuery(function() {
+          django.jQuery('#loginas-link').click(function() {
+            django.jQuery('#loginas-form').submit();
+            return false;
+          });
+        });
+    </script>
+{% endif %}

@@ -1,5 +1,6 @@
 {% extends "admin/change_form.html" %}
 {% load i18n %}
+{% load loginas_javascript %}
 
 {% block object-tools-items %}
     {{ block.super }}
@@ -8,16 +9,9 @@
 {% endblock %}
 
 {% block footer %}
-{{ block.super }}
+    {{ block.super }}
     <form method="post" id="loginas-form" action="{% url 'loginas-user-login' object_id %}" style="display: none">
         {% csrf_token %}
     </form>
-    <script>
-	django.jQuery(function() {
-          django.jQuery('#loginas-link').click(function() {
-            django.jQuery('#loginas-form').submit();
-            return false;
-          });
-        });
-    </script>
+    {% javascript %}
 {% endblock %}
