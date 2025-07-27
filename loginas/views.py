@@ -39,14 +39,14 @@ def _load_module(path):
         )
     except ValueError:
         raise ImproperlyConfigured(
-            "Error importing CAN_LOGIN_AS" " function. Is CAN_LOGIN_AS a" " string?"
+            "Error importing CAN_LOGIN_AS function. Is CAN_LOGIN_AS a string?"
         )
 
     try:
         can_login_as = getattr(mod, attr)
     except AttributeError:
         raise ImproperlyConfigured(
-            "Module {0} does not define a {1} " "function.".format(module, attr)
+            "Module {0} does not define a {1} function.".format(module, attr)
         )
     return can_login_as
 

@@ -84,7 +84,6 @@ class WrongAuthBackend:
 
 
 class ViewTest(TestCase):
-
     """Tests for user_login view"""
 
     def setUp(self):

@@ -1,9 +1,21 @@
 repos:
-- repo: https://github.com/ambv/black
-  rev: 23.7.0
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.12.2
   hooks:
-  - id: black
-    name: Reformat files
+    - id: ruff-check
+      args: ["--fix"]
+    - id: ruff-format
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: v1.16.1
+  hooks:
+  - id: mypy
+    name: Run MyPy typing checks.
+    args: ["--ignore-missing-imports", "--install-types", "--non-interactive"]
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v5.0.0
+  hooks:
+    - id: trailing-whitespace
+      files: '\.html?$'
 - repo: local
   hooks:
   - id: no-todos
@@ -11,22 +23,6 @@ repos:
     entry: "TODO"
     language: pygrep
     types: [python]
-- repo: https://github.com/asottile/reorder_python_imports
-  rev: v3.10.0
-  hooks:
-  - id: reorder-python-imports
-    name: Reorder imports
-- repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: 'v0.0.280'
-  hooks:
-    - id: ruff
-      args: ["--ignore=F403,E501,N802,N803,N806,C901,D100,D102,D102,D10"]
-- repo: https://github.com/pre-commit/mirrors-mypy
-  rev: v1.4.1
-  hooks:
-  - id: mypy
-    name: Run type checks
-    args: ["--ignore-missing-imports"]
 - repo: local
   hooks:
   - id: gitchangelog
