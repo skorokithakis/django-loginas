@@ -75,9 +75,10 @@ def login_as(user, request, store_original_user=True):
                 change_message=change_message,
                 action_flag=CHANGE,
             )
-        except AttributeError:    
+        except AttributeError:
             # Django < 5.1: legacy API
             from django.contrib.contenttypes.models import ContentType
+
             LogEntry.objects.log_action(
                 user_id=original_user_pk,
                 content_type_id=ContentType.objects.get_for_model(user).pk,
@@ -86,7 +87,7 @@ def login_as(user, request, store_original_user=True):
                 change_message=change_message,
                 action_flag=CHANGE,
             )
-            
+
     # Log the user in.
     if not hasattr(user, "backend"):
         return

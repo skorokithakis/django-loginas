@@ -3,6 +3,15 @@
 
 ## Unreleased
 
+## v0.3.13
+
+### Features
+
+* Prepare for Django 6.0
+
+
+## v0.3.12
+
 ### Features
 
 * Added optional use of separate .js file to avoid inline javascript on servers with strict SCP (#110) [Erik Janssen]
