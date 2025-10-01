@@ -1,6 +1,13 @@
 # Changelog
 
 
+## [0.3.13](https://github.com/skorokithakis/django-loginas/compare/v0.3.12...v0.3.13) (2025-10-01)
+
+
+### Bug Fixes
+
+* Fix deprecated log_action for Django 6.0 ([#114](https://github.com/skorokithakis/django-loginas/issues/114)) ([96b0da4](https://github.com/skorokithakis/django-loginas/commit/96b0da4a36808284814ec592980b59a59af0dd1f))
+
 ## v0.3.12 (2025-07-27)
 
 ## v0.3.13
@@ -161,5 +168,3 @@
 ### Fixes
 
 * Make loginas compatible with semantic-release. [Stavros Korokithakis]
-
-
