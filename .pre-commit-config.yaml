@@ -29,8 +29,11 @@ repos:
       name: Generate changelog
       entry: gitchangelog
       language: python
-      additional_dependencies: [gitchangelog]
+      additional_dependencies:
+        - gitchangelog
+        - pystache
       pass_filenames: false
+      stages: [commit]
 - repo: local
   hooks:
   - id: forbid_prints
