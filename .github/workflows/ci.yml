@@ -32,6 +32,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - uses: actions/checkout@v2
       - run: |
+          python -m pip install setuptools
           python setup.py develop
           python -m pip install django~=${{ matrix.django-version }}
       - run: python loginas/tests/manage.py test tests --verbosity=2

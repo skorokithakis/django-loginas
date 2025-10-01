@@ -1,7 +1,7 @@
 # Changelog
 
 
-## Unreleased
+## v0.3.12 (2025-07-27)
 
 ## v0.3.13
 

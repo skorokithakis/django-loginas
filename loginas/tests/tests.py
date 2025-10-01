@@ -31,11 +31,14 @@ except ImportError:
 
 
 try:
-    import imp
-
-    reload = imp.reload  # @ReservedAssignment
+    from importlib import reload
 except ImportError:
-    pass
+    try:
+        import imp
+
+        reload = imp.reload  # @ReservedAssignment
+    except ImportError:
+        pass
 
 
 class override_settings(override_settings_orig):
