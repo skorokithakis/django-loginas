@@ -12,7 +12,6 @@ from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.contrib.auth.models import update_last_login
 from django.contrib.auth.signals import user_logged_in
-from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ImproperlyConfigured
 from django.core.signing import SignatureExpired
 from django.core.signing import TimestampSigner
@@ -69,14 +68,25 @@ def login_as(user, request, store_original_user=True):
     # Add admin audit log entry
     if original_user_pk:
         change_message = "User {0} logged in as {1}.".format(request.user, user)
-        LogEntry.objects.log_action(
-            user_id=original_user_pk,
-            content_type_id=ContentType.objects.get_for_model(user).pk,
-            object_id=user.pk,
-            object_repr=str(user),
-            change_message=change_message,
-            action_flag=CHANGE,
-        )
+        try:
+            LogEntry.objects.log_actions(
+                user_id=original_user_pk,
+                queryset=[user],
+                change_message=change_message,
+                action_flag=CHANGE,
+            )
+        except AttributeError:
+            # Django < 5.1: legacy API
+            from django.contrib.contenttypes.models import ContentType
+
+            LogEntry.objects.log_action(
+                user_id=original_user_pk,
+                content_type_id=ContentType.objects.get_for_model(user).pk,
+                object_id=user.pk,
+                object_repr=str(user),
+                change_message=change_message,
+                action_flag=CHANGE,
+            )
 
     # Log the user in.
     if not hasattr(user, "backend"):

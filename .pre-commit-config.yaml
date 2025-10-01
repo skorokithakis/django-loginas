@@ -25,13 +25,15 @@ repos:
     types: [python]
 - repo: local
   hooks:
-  - id: gitchangelog
-    language: system
-    always_run: true
-    pass_filenames: false
-    name: Generate changelog
-    entry: bash -c "gitchangelog > CHANGELOG.md"
-    stages: [commit]
+    - id: gitchangelog
+      name: Generate changelog
+      entry: gitchangelog
+      language: python
+      additional_dependencies:
+        - gitchangelog
+        - pystache
+      pass_filenames: false
+      stages: [commit]
 - repo: local
   hooks:
   - id: forbid_prints
