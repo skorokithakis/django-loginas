@@ -90,6 +90,15 @@ from django.core.urlresolvers import reverse_lazy
 LOGOUT_URL = reverse_lazy('loginas-logout')
 ```
 
+In later versions of Django:
+
+```python
+# settings.py
+
+from django.urls import reverse_lazy
+LOGOUT_URL = reverse_lazy('loginas-logout')
+```
+
 Additionally, you can specify the redirect url for logout (the default is `settings.LOGIN_REDIRECT_URL`).
 
 ```python
@@ -182,6 +191,19 @@ TEMPLATES = [
 Note that django-loginas won't let you log in as other superusers, to prevent
 privilege escalation from staff users to superusers. If you want to log in as
 a superuser, first demote them to a non-superuser, and then log in.
+
+### URL Issues
+
+If you are getting logged out entirely after you log in as a user, switch to:
+
+```python
+# urls.py
+urlpatterns = [
+    # from Django 3.2 on, make sure to add loginas urls before the admin site urls, i.e.:
+    path('accounts/', include('loginas.urls')),
+    path('admin/', admin.site.urls),
+]
+```
 
 License
 -------
