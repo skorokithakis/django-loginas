@@ -194,7 +194,7 @@ a superuser, first demote them to a non-superuser, and then log in.
 
 ### URL Issues
 
-After loginas a user, if you are getting logged out entirely, then switch to:
+If you are getting logged out entirely after you log in as a user, switch to:
 
 ```python
 # urls.py
