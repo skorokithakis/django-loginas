@@ -42,7 +42,7 @@ def no_update_last_login():
         user_logged_in.connect(**kw_id)
 
 
-def login_as(user, request, store_original_user=True):
+def login_as(user, request, store_original_user=True, reason=""):
     """
     Utility function for forcing a login as specific user -- be careful about
     calling this carelessly :)
@@ -68,6 +68,8 @@ def login_as(user, request, store_original_user=True):
     # Add admin audit log entry
     if original_user_pk:
         change_message = "User {0} logged in as {1}.".format(request.user, user)
+        if reason:
+            change_message += " Reason: {0}".format(reason)
         try:
             LogEntry.objects.log_actions(
                 user_id=original_user_pk,

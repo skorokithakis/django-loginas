@@ -79,8 +79,19 @@ def user_login(request, user_id):
         )
         return redirect(request.META.get("HTTP_REFERER", "/"))
 
+    reason = request.POST.get("reason", "").strip()
+
+    if la_settings.LOGIN_REASON_REQUIRED and not reason:
+        messages.error(
+            request,
+            _("A reason is required when logging in as another user."),
+            extra_tags=la_settings.MESSAGE_EXTRA_TAGS,
+            fail_silently=True,
+        )
+        return redirect(request.META.get("HTTP_REFERER", "/"))
+
     try:
-        login_as(user, request)
+        login_as(user, request, reason=reason)
     except ImproperlyConfigured as e:
         messages.error(
             request,
