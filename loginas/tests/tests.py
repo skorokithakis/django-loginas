@@ -8,6 +8,7 @@ from datetime import timedelta
 
 import django
 from django.conf import settings as django_settings
+from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
 from django.contrib.messages.storage.cookie import CookieStorage
 from django.core.exceptions import ImproperlyConfigured
@@ -329,3 +330,112 @@ class ViewTest(TestCase):
         self.target_user.save()
         response = self.get_target_url()
         self.assertLoginSuccess(response, self.target_user)
+
+    def test_login_as_with_reason(self):
+        superuser = create_user("me", "pass", is_superuser=True, is_staff=True)
+        self.assertTrue(self.client.login(username="me", password="pass"))
+
+        payload = self.get_csrf_token_payload()
+        payload["reason"] = "Investigating support ticket #1234"
+
+        response = self.client.post(
+            reverse("loginas-user-login", kwargs={"user_id": self.target_user.id}),
+            data=payload,
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertLoginSuccess(response, self.target_user)
+
+        # Check that the LogEntry contains the reason
+        log_entry = LogEntry.objects.filter(user=superuser).latest("action_time")
+        self.assertIn("logged in as", log_entry.change_message)
+        self.assertIn(
+            "Reason: Investigating support ticket #1234", log_entry.change_message
+        )
+
+    def test_login_as_without_reason(self):
+        superuser = create_user("me", "pass", is_superuser=True, is_staff=True)
+        self.assertTrue(self.client.login(username="me", password="pass"))
+
+        response = self.get_target_url()
+        self.assertLoginSuccess(response, self.target_user)
+
+        # Check that the LogEntry does not contain "Reason:" when no reason provided
+        log_entry = LogEntry.objects.filter(user=superuser).latest("action_time")
+        self.assertIn("logged in as", log_entry.change_message)
+        self.assertNotIn("Reason:", log_entry.change_message)
+
+    def test_login_as_with_empty_reason(self):
+        superuser = create_user("me", "pass", is_superuser=True, is_staff=True)
+        self.assertTrue(self.client.login(username="me", password="pass"))
+
+        payload = self.get_csrf_token_payload()
+        payload["reason"] = "   "  # Whitespace only should be treated as empty
+
+        response = self.client.post(
+            reverse("loginas-user-login", kwargs={"user_id": self.target_user.id}),
+            data=payload,
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertLoginSuccess(response, self.target_user)
+
+        # Check that the LogEntry does not contain "Reason:" when reason is only whitespace
+        log_entry = LogEntry.objects.filter(user=superuser).latest("action_time")
+        self.assertIn("logged in as", log_entry.change_message)
+        self.assertNotIn("Reason:", log_entry.change_message)
+
+    @override_settings(LOGINAS_LOGIN_REASON_REQUIRED=True)
+    def test_login_as_reason_required_without_reason(self):
+        superuser = create_user("me", "pass", is_superuser=True, is_staff=True)
+        self.assertTrue(self.client.login(username="me", password="pass"))
+
+        # Try to login without providing a reason
+        response = self.client.post(
+            reverse("loginas-user-login", kwargs={"user_id": self.target_user.id}),
+            data=self.get_csrf_token_payload(),
+        )
+        self.assertEqual(response.status_code, 302)
+
+        # Should be redirected back with an error, not logged in as target
+        self.assertLoginError(
+            response, message="A reason is required when logging in as another user."
+        )
+        self.assertCurrentUserIs(superuser)
+
+    @override_settings(LOGINAS_LOGIN_REASON_REQUIRED=True)
+    def test_login_as_reason_required_with_reason(self):
+        superuser = create_user("me", "pass", is_superuser=True, is_staff=True)
+        self.assertTrue(self.client.login(username="me", password="pass"))
+
+        payload = self.get_csrf_token_payload()
+        payload["reason"] = "Support ticket #5678"
+
+        response = self.client.post(
+            reverse("loginas-user-login", kwargs={"user_id": self.target_user.id}),
+            data=payload,
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertLoginSuccess(response, self.target_user)
+
+        # Check that the LogEntry contains the reason
+        log_entry = LogEntry.objects.filter(user=superuser).latest("action_time")
+        self.assertIn("Reason: Support ticket #5678", log_entry.change_message)
+
+    @override_settings(LOGINAS_LOGIN_REASON_REQUIRED=True)
+    def test_login_as_reason_required_with_whitespace_only(self):
+        superuser = create_user("me", "pass", is_superuser=True, is_staff=True)
+        self.assertTrue(self.client.login(username="me", password="pass"))
+
+        payload = self.get_csrf_token_payload()
+        payload["reason"] = "   "  # Whitespace only should fail validation
+
+        response = self.client.post(
+            reverse("loginas-user-login", kwargs={"user_id": self.target_user.id}),
+            data=payload,
+        )
+        self.assertEqual(response.status_code, 302)
+
+        # Should be redirected back with an error
+        self.assertLoginError(
+            response, message="A reason is required when logging in as another user."
+        )
+        self.assertCurrentUserIs(superuser)

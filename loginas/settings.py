@@ -41,3 +41,5 @@ UPDATE_LAST_LOGIN = getattr(settings, "LOGINAS_UPDATE_LAST_LOGIN", False)
 MESSAGE_EXTRA_TAGS = getattr(settings, "LOGINAS_MESSAGE_EXTRA_TAGS", "")
 
 CSP_FRIENDLY = getattr(settings, "LOGINAS_CSP_FRIENDLY", False)
+
+LOGIN_REASON_REQUIRED = getattr(settings, "LOGINAS_LOGIN_REASON_REQUIRED", False)

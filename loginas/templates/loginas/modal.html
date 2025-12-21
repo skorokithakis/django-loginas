@@ -1,0 +1,94 @@
+{% load i18n %}
+
+<div id="loginas-modal" style="display: none;" data-reason-required="{{ reason_required|yesno:"true,false" }}">
+    <div id="loginas-modal-backdrop"></div>
+    <div id="loginas-modal-dialog">
+        <h2>{% trans "Log in as user" %}</h2>
+        <p>{% if reason_required %}{% trans "Please provide a reason for this action:" %}{% else %}{% trans "Please provide a reason for this action (optional):" %}{% endif %}</p>
+        <textarea id="loginas-reason" rows="3" placeholder="{% trans "e.g., Investigating support ticket #1234" %}"{% if reason_required %} required{% endif %}></textarea>
+        <p id="loginas-error" style="display: none; color: var(--error-fg, #ba2121); margin: 10px 0 0 0;">{% trans "A reason is required." %}</p>
+        <div id="loginas-modal-buttons">
+            <button type="button" id="loginas-cancel" class="button">{% trans "Cancel" %}</button>
+            <button type="button" id="loginas-confirm" class="button default">{% trans "Log in as user" %}</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    #loginas-modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9998;
+    }
+    #loginas-modal-dialog {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--body-bg, #fff);
+        padding: 20px 25px;
+        border-radius: 4px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        z-index: 9999;
+        min-width: 400px;
+        max-width: 90%;
+    }
+    #loginas-modal-dialog h2 {
+        margin: 0 0 15px 0;
+        font-size: 18px;
+        color: var(--body-fg, #333);
+    }
+    #loginas-modal-dialog p {
+        margin: 0 0 10px 0;
+        color: var(--body-quiet-color, #666);
+    }
+    #loginas-reason {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px 10px;
+        border: 1px solid var(--border-color, #ccc);
+        border-radius: 4px;
+        font-size: 14px;
+        font-family: inherit;
+        resize: vertical;
+        background: var(--body-bg, #fff);
+        color: var(--body-fg, #333);
+    }
+    #loginas-reason:focus {
+        outline: none;
+        border-color: var(--primary, #417690);
+    }
+    #loginas-reason.loginas-invalid {
+        border-color: var(--error-fg, #ba2121);
+    }
+    #loginas-modal-buttons {
+        margin-top: 15px;
+        text-align: right;
+    }
+    #loginas-modal-buttons .button {
+        padding: 8px 16px;
+        margin-left: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+    #loginas-cancel {
+        background: var(--close-button-bg, #888);
+        color: #fff;
+    }
+    #loginas-cancel:hover {
+        background: var(--close-button-hover-bg, #666);
+    }
+    #loginas-confirm {
+        background: var(--primary, #417690);
+        color: #fff;
+    }
+    #loginas-confirm:hover {
+        background: var(--primary-fg, #205067);
+    }
+</style>

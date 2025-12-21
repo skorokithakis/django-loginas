@@ -136,6 +136,15 @@ This example uses a symlink:
 ln -s <path_to_site_packages>/loginas/static/loginas static/loginas
 ```
 
+By default, specifying a reason is not required.
+You can override this behavior like so:
+
+```python
+# settings.py
+
+LOGINAS_LOGIN_REASON_REQUIRED = True
+```
+
 Other implementation suggestions
 --------------------------------
 
