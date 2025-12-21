@@ -1,6 +1,13 @@
 # Changelog
 
 
+## [0.3.14](https://github.com/skorokithakis/django-loginas/compare/v0.3.13...v0.3.14) (2025-12-21)
+
+
+### Features
+
+* Add support for specifying login reason ([#116](https://github.com/skorokithakis/django-loginas/issues/116)) ([60c936f](https://github.com/skorokithakis/django-loginas/commit/60c936f1164615b9921d2f08e0ccd44be5dad0ec))
+
 ## [0.3.13](https://github.com/skorokithakis/django-loginas/compare/v0.3.12...v0.3.13) (2025-10-01)
 
 
