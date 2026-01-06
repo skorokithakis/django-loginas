@@ -4,7 +4,14 @@
   "always-update": true,
   "packages": {
     ".": {
-      "release-type": "python"
+      "release-type": "python",
+      "extra-files": [
+        {
+          "type": "generic",
+          "path": "loginas/__init__.py",
+          "glob": false
+        }
+      ]
     }
   },
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
